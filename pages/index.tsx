@@ -7,25 +7,34 @@ import {
   signInWithPopup,
   getAdditionalUserInfo,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
+import User from "../types/user.interface";
 
 const SignInPage: React.FC = () => {
   const router = useRouter();
 
-  const { firebase, auth, provider, db } = useContext(FirebaseContext);
+  const { firebase, auth, provider } = useContext(FirebaseContext);
 
   const signIn = () => {
     signInWithPopup(auth, provider)
       .then(async (result) => {
         //  const credential = GoogleAuthProvider.credentialFromResult(result);
         //  const token = credential.accessToken;
-        const user = result.user;
-        await setDoc(doc(db, "users", user.uid), user);
 
         const additionalInfo = getAdditionalUserInfo(result);
 
         if (additionalInfo.isNewUser) {
+          const user = result.user;
+          const db = getFirestore();
+          const userObj: User = {
+            email: user.email,
+            id: user.uid,
+            name: user.displayName,
+          };
+
+          await setDoc(doc(db, "users", user.uid), userObj);
+
           await router.push("/complete-signup");
         } else {
           await router.push("/home");
@@ -36,6 +45,7 @@ const SignInPage: React.FC = () => {
         const errorMessage = error.message;
         const email = error.email;
         const credential = GoogleAuthProvider.credentialFromError(error);
+        console.log(error);
       });
   };
 

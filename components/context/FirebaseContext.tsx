@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
-import { getFirestore, Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,7 +15,6 @@ interface Context {
   firebase: FirebaseApp;
   provider: GoogleAuthProvider;
   auth: Auth;
-  db: Firestore;
 }
 
 export const FirebaseContext = React.createContext<Context>(null);
@@ -25,17 +23,15 @@ export const FirebaseProvider: React.FC = ({ children }) => {
   const [firebase, setFirebase] = useState<FirebaseApp>(null);
   const [provider, setProvider] = useState<GoogleAuthProvider>(null);
   const [auth, setAuth] = useState<Auth>(null);
-  const [db, setDb] = useState<Firestore>(null);
 
   useEffect(() => {
     setFirebase(initializeApp(firebaseConfig));
     setProvider(new GoogleAuthProvider());
     setAuth(getAuth());
-    setDb(getFirestore());
   }, []);
 
   return (
-    <FirebaseContext.Provider value={{ firebase, provider, auth, db }}>
+    <FirebaseContext.Provider value={{ firebase, provider, auth }}>
       {children}
     </FirebaseContext.Provider>
   );
