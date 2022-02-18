@@ -33,7 +33,7 @@ const PrimaryTextInput: React.FC<Props> = ({
   minWidth = "0",
   required = true,
   inputType = "text",
-  boxShadow = "0px 4px 8px rgba(152, 152, 152, 0.25)",
+  boxShadow = "0px 4px 8px rgba(103, 103, 103, 0.25)",
   register,
   error,
 }) => {
