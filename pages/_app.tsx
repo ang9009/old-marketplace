@@ -1,13 +1,16 @@
 import { AppProps } from "next/app";
+import { FirebaseProvider } from "../components/context/FirebaseContext";
+import { UserProvider } from "../components/context/UserContext";
+
 import "../styles/global.css";
 import "../styles/variables.css";
-import { initializeApp } from "firebase/app";
-import { FirebaseProvider } from "../components/context/FirebaseContext";
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <FirebaseProvider>
-      <Component {...pageProps} />
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
     </FirebaseProvider>
   );
 }

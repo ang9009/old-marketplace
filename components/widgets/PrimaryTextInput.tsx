@@ -40,10 +40,12 @@ const PrimaryTextInput: React.FC<Props> = ({
   return (
     <>
       <div>
+        <label htmlFor={name}>{placeholder}</label>
         <input
           className={error?.message && "invalid"}
           type={inputType}
           name={name}
+          id={name}
           placeholder={placeholder}
           required={required}
           {...(register && register(name))}

@@ -14,17 +14,6 @@ const SignupContainer: React.FC = ({ children }) => {
           background: var(--secondaryBackgroundColor);
         }
 
-        .container {
-          width: 50vw;
-          height: 100vh;
-          background: #fff;
-          font-size: 20px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: var(--primaryColor);
-        }
-
         .image {
           width: 50vw;
           height: 100vh;
@@ -40,6 +29,14 @@ const SignupContainer: React.FC = ({ children }) => {
           background: #000;
           z-index: 2;
           opacity: 0.4;
+        }
+
+        .container {
+          width: 50vw;
+          height: 100vh;
+          background: #fff;
+          font-size: 20px;
+          position: relative;
         }
       `}</style>
     </>

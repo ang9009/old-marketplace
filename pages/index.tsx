@@ -1,20 +1,19 @@
 import React, { useContext } from "react";
-import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import { FirebaseContext } from "../components/context/FirebaseContext";
+import { UserContext } from "../components/context/UserContext";
 import SignupContainer from "../components/ui/SignupContainer";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   getAdditionalUserInfo,
 } from "firebase/auth";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
-import User from "../types/user.interface";
 
 const SignInPage: React.FC = () => {
   const router = useRouter();
 
-  const { firebase, auth, provider } = useContext(FirebaseContext);
+  const { auth, provider } = useContext(FirebaseContext);
+  const { setUser } = useContext(UserContext);
 
   const signIn = () => {
     signInWithPopup(auth, provider)
@@ -26,15 +25,7 @@ const SignInPage: React.FC = () => {
 
         if (additionalInfo.isNewUser) {
           const user = result.user;
-          const db = getFirestore();
-          const userObj: User = {
-            email: user.email,
-            id: user.uid,
-            name: user.displayName,
-          };
-
-          await setDoc(doc(db, "users", user.uid), userObj);
-
+          setUser({ name: user.displayName, id: user.uid, email: user.email });
           await router.push("/complete-signup");
         } else {
           await router.push("/home");
@@ -54,15 +45,37 @@ const SignInPage: React.FC = () => {
       <SignupContainer>
         <div className="content">
           <h1>CIS Marketplace</h1>
-          <button onClick={signIn}>Sign in using Google</button>
+          <button onClick={signIn}>Continue with Google</button>
         </div>
       </SignupContainer>
 
       <style jsx>{`
         button {
-          width: 100%;
           margin-top: 10px;
-          padding: 10px;
+          padding: 15px;
+          background: var(--primaryBackgroundColor);
+          border: 2px solid var(--secondaryBackgroundColor);
+          color: #626262;
+          cursor: pointer;
+          width: 100%;
+        }
+
+        button:hover {
+          background: var(--secondaryBackgroundColor);
+          transition: all 0.2s;
+        }
+
+        .content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: min-content;
+        }
+
+        .content h1 {
+          white-space: nowrap;
+          color: var(--primaryColor);
         }
       `}</style>
     </>
