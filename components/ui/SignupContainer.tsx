@@ -16,7 +16,7 @@ const SignupContainer: React.FC = ({ children }) => {
 
         .image {
           width: 50vw;
-          height: 100vh;
+          min-height: 100vh;
           position: relative;
           background-image: url("/cis.jpg");
           background-size: cover;
@@ -33,7 +33,7 @@ const SignupContainer: React.FC = ({ children }) => {
 
         .container {
           width: 50vw;
-          height: 100vh;
+          min-height: 100vh;
           background: #fff;
           font-size: 20px;
           position: relative;
