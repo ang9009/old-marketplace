@@ -19,13 +19,29 @@ export interface SubjectOption {
 }
 
 export const seniorSubjectOptions: SubjectOption[] = [
-  { label: "Math AI", value: "Math AI" },
-  { label: "Math AA", value: "Math AA" },
-  { label: "English L&L", value: "English L&L" },
-  { label: "English LL", value: "English LL" },
-];
+  { label: "Math AI", value: "math ai" },
+  { label: "Math AA", value: "math aa" },
+  { label: "English L&L", value: "english l&l" },
+  { label: "English Lit", value: "english lit" },
+  { label: "Economics", value: "economics" },
+  { label: "Computer Science", value: "computer science" },
+  { label: "Geography", value: "geography" },
+  { label: "History", value: "history" },
+  { label: "Psychology", value: "psychology" },
+  { label: "Physics", value: "physics" },
+  { label: "Biology", value: "biology" },
+  { label: "Chemistry", value: "chemistry" },
+  { label: "Chinese A L&L", value: "chinese a l&l" },
+  { label: "Chinese A Lit", value: "chinese a lit" },
+  { label: "Chinese B", value: "chinese b" },
+].sort((a, b) => a.label.localeCompare(b.label));
 
 export const secondarySubjectOptions: SubjectOption[] = [
-  { label: "deeznuts", value: "Maqwejrth AI" },
-  { label: "qwoerqwer", value: "Maqweoinri" },
-];
+  { label: "Chinese", value: "chinese" },
+  { label: "English", value: "english" },
+  { label: "Math", value: "Math" },
+  { label: "InSo", value: "InSo" },
+  { label: "Science", value: "science" },
+  { label: "Spanish", value: "spanish" },
+  { label: "French", value: "french" },
+].sort((a, b) => a.label.localeCompare(b.label));

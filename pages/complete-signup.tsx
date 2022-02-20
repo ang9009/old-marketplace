@@ -4,7 +4,7 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { UserContext } from "../components/context/UserContext";
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
-import Select from "react-select";
+import Select, { MultiValue } from "react-select";
 import { yearLevelOptions } from "../data/data";
 import {
   seniorSubjectOptions,
@@ -13,9 +13,10 @@ import {
   YearLevelOption,
 } from "../data/data";
 import { useDropzone } from "react-dropzone";
+import User from "../types/user.interface";
 
 const CompleteSignupPage: React.FC = () => {
-  // useAuth();
+  useAuth();
   const { user } = useContext(UserContext);
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
@@ -24,7 +25,7 @@ const CompleteSignupPage: React.FC = () => {
   const [previousYearLevel, setPreviousYearLevel] =
     useState<YearLevelOption>(null);
   const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
-  const [subjects, setSubjects] = useState(null);
+  const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
 
   useEffect(() => {
     if (yearLevel) {
@@ -49,6 +50,20 @@ const CompleteSignupPage: React.FC = () => {
     }
   }, [yearLevel]);
 
+  const submit = async (e) => {
+    e.preventDefault();
+
+    const db = getFirestore();
+    const data: User = {
+      ...user,
+      phoneNumber: e.target.phoneNumber.value,
+      subjects: subjects.map((subject) => subject.value),
+      yearLevel: yearLevel.value,
+    };
+
+    await setDoc(doc(db, "users", user.id), data);
+  };
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const url = URL.createObjectURL(acceptedFiles[0]);
     setImage({ url, file: acceptedFiles[0] });
@@ -62,21 +77,13 @@ const CompleteSignupPage: React.FC = () => {
     multiple: false,
   });
 
-  const submit = async () => {
-    // const db = getFirestore();
-    // await setDoc(doc(db, "users", id), );
-  };
-
   return (
     <>
       <SignupContainer>
-        <form className="content">
+        <form className="content" onSubmit={submit}>
           <h1>Complete your sign up</h1>
 
-          <PrimaryTextInput
-            name={"phone-number"}
-            placeholder={"Phone number"}
-          />
+          <PrimaryTextInput name={"phoneNumber"} placeholder={"Phone number"} />
 
           <p>Year level</p>
           <Select
@@ -84,6 +91,7 @@ const CompleteSignupPage: React.FC = () => {
             options={yearLevelOptions}
             placeholder={"Year level"}
             value={yearLevel}
+            isSearchable={false}
             onChange={(e) => {
               setYearLevel((prev) => {
                 setPreviousYearLevel(prev);

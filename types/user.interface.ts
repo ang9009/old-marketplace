@@ -1,7 +1,7 @@
 export default interface User {
   email: string;
-  id: string;
   name: string;
+  phoneNumber: string;
   subjects: string[];
-  yearLevel: number;
+  yearLevel: string;
 }
