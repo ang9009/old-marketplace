@@ -6,30 +6,22 @@ import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
 import Select, { MultiValue } from "react-select";
 import { yearLevelOptions } from "../data/data";
-import {
-  seniorSubjectOptions,
-  secondarySubjectOptions,
-  SubjectOption,
-  YearLevelOption,
-} from "../data/data";
+import { seniorSubjectOptions, secondarySubjectOptions, SubjectOption, YearLevelOption } from "../data/data";
 import { useDropzone } from "react-dropzone";
 import User from "../types/user.interface";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { FirebaseContext } from "../components/context/FirebaseContext";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getStorage } from "firebase/storage";
 
 const CompleteSignupPage: React.FC = () => {
   useAuth();
   const { user } = useContext(UserContext);
-  const { storage } = useContext(FirebaseContext);
+
   const router = useRouter();
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
-  const [subjectOptions, setSubjectOptions] =
-    useState<SubjectOption[]>(seniorSubjectOptions);
-  const [previousYearLevel, setPreviousYearLevel] =
-    useState<YearLevelOption>(null);
+  const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
+  const [previousYearLevel, setPreviousYearLevel] = useState<YearLevelOption>(null);
   const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
   const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
 
@@ -37,8 +29,7 @@ const CompleteSignupPage: React.FC = () => {
   useEffect(() => {
     if (yearLevel) {
       const yearLevelValue = parseInt(yearLevel.value);
-      const previousYearLevelValue =
-        previousYearLevel?.value && parseInt(previousYearLevel.value);
+      const previousYearLevelValue = previousYearLevel?.value && parseInt(previousYearLevel.value);
 
       if (yearLevelValue < 12) {
         setSubjectOptions(secondarySubjectOptions);
@@ -70,9 +61,8 @@ const CompleteSignupPage: React.FC = () => {
 
       //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
 
-      const snapshot = image
-        ? await uploadBytes(ref(storage, user.id), image.file)
-        : null;
+      const storage = getStorage();
+      const snapshot = image ? await uploadBytes(ref(storage, user.id), image.file) : null;
 
       const db = getFirestore();
       const data: User = {
@@ -147,11 +137,7 @@ const CompleteSignupPage: React.FC = () => {
           <div {...getRootProps()} className="dropzone">
             <input {...getInputProps()} />
             <p>Drag 'n' drop some files here, or click to select files</p>
-            <img
-              src={image?.url}
-              alt={image?.file?.name}
-              className="profile-picture"
-            />
+            <img src={image?.url} alt={image?.file?.name} className="profile-picture" />
           </div>
 
           <button type="submit">Submit</button>

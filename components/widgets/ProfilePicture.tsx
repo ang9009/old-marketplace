@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getDownloadURL, ref } from "firebase/storage";
-import { FirebaseContext } from "../context/FirebaseContext";
+import { getDownloadURL, ref, getStorage } from "firebase/storage";
 
 interface Props {
   imagePath: string;
@@ -10,19 +9,16 @@ interface Props {
 
 const ProfilePicture: React.FC<Props> = ({ imagePath, width, height }) => {
   const [src, setSrc] = useState<string | null>(null);
-  const { storage } = useContext(FirebaseContext);
 
   useEffect(() => {
     if (imagePath) {
-      getDownloadURL(ref(storage, imagePath)).then((url) => {
+      getDownloadURL(ref(getStorage(), imagePath)).then((url) => {
         setSrc(url);
       });
     }
   }, [imagePath]);
 
-  return (
-    <>{src && <img src={src} alt={src} width={width} height={height} />}</>
-  );
+  return <>{src && <img src={src} alt={src} width={width} height={height} />}</>;
 };
 
 export default ProfilePicture;

@@ -1,6 +1,5 @@
 import { AppProps } from "next/app";
 import { initializeApp } from "firebase/app";
-import { FirebaseProvider } from "../components/context/FirebaseContext";
 import { UserProvider } from "../components/context/UserContext";
 import firebaseConfig from "../config/firebase.config";
 import "react-toastify/dist/ReactToastify.css";

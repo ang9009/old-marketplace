@@ -1,26 +1,18 @@
 import React, { useContext } from "react";
-import { FirebaseContext } from "../components/context/FirebaseContext";
 import { UserContext } from "../components/context/UserContext";
 import SignupContainer from "../components/ui/SignupContainer";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  getAdditionalUserInfo,
-} from "firebase/auth";
+import { provider } from "../config/firebase.config";
+import { signInWithPopup, getAdditionalUserInfo, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 
 const SignInPage: React.FC = () => {
   const router = useRouter();
 
-  const { auth, provider } = useContext(FirebaseContext);
   const { setUser } = useContext(UserContext);
 
   const signIn = () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(getAuth(), provider)
       .then(async (result) => {
-        //  const credential = GoogleAuthProvider.credentialFromResult(result);
-        //  const token = credential.accessToken;
-
         const additionalInfo = getAdditionalUserInfo(result);
 
         if (additionalInfo.isNewUser) {
@@ -32,10 +24,6 @@ const SignInPage: React.FC = () => {
         }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
         console.log(error);
       });
   };
