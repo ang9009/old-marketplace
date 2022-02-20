@@ -14,10 +14,16 @@ import {
 } from "../data/data";
 import { useDropzone } from "react-dropzone";
 import User from "../types/user.interface";
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { FirebaseContext } from "../components/context/FirebaseContext";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const CompleteSignupPage: React.FC = () => {
   useAuth();
   const { user } = useContext(UserContext);
+  const { storage } = useContext(FirebaseContext);
+  const router = useRouter();
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const [subjectOptions, setSubjectOptions] =
@@ -27,6 +33,7 @@ const CompleteSignupPage: React.FC = () => {
   const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
   const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
 
+  //Updates subject options dropdown menu depending on year level, clears menu when current and previous year level are not both senior/secondary
   useEffect(() => {
     if (yearLevel) {
       const yearLevelValue = parseInt(yearLevel.value);
@@ -51,24 +58,49 @@ const CompleteSignupPage: React.FC = () => {
   }, [yearLevel]);
 
   const submit = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    const db = getFirestore();
-    const data: User = {
-      ...user,
-      phoneNumber: e.target.phoneNumber.value,
-      subjects: subjects.map((subject) => subject.value),
-      yearLevel: yearLevel.value,
-    };
+      if (!yearLevel.value || !subjects || subjects.length === 0) {
+        toast.error("One or more fields are empty!", {
+          autoClose: 2000,
+        });
+        return;
+      }
 
-    await setDoc(doc(db, "users", user.id), data);
+      //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
+
+      const snapshot = image
+        ? await uploadBytes(ref(storage, user.id), image.file)
+        : null;
+
+      const db = getFirestore();
+      const data: User = {
+        name: user.name,
+        email: user.email,
+        phoneNumber: e.target.phoneNumber.value,
+        subjects: subjects.map((subject) => subject.value),
+        yearLevel: yearLevel.value,
+        profileImagePath: snapshot?.metadata?.fullPath ?? null,
+      };
+
+      //TODO: remove later
+      // console.log(await getDownloadURL(ref(storage, data.profileImagePath)));
+
+      await setDoc(doc(db, "users", user.id), data);
+      await router.push("/home");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
+  //On drop listener for the image dropzone
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const url = URL.createObjectURL(acceptedFiles[0]);
     setImage({ url, file: acceptedFiles[0] });
   }, []);
 
+  //Dropzone settings
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: "image/*",
@@ -124,6 +156,7 @@ const CompleteSignupPage: React.FC = () => {
 
           <button type="submit">Submit</button>
         </form>
+        <ToastContainer />
       </SignupContainer>
 
       <style jsx>{`

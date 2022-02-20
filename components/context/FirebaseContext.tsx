@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
+import { FirebaseStorage, getStorage } from "firebase/storage";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getDatabase, Database } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,26 +15,29 @@ const firebaseConfig = {
 };
 
 interface Context {
-  firebase: FirebaseApp;
+  app: FirebaseApp;
   provider: GoogleAuthProvider;
   auth: Auth;
+  storage: FirebaseStorage;
 }
 
 export const FirebaseContext = React.createContext<Context>(null);
 
 export const FirebaseProvider: React.FC = ({ children }) => {
-  const [firebase, setFirebase] = useState<FirebaseApp>(null);
+  const [app, setApp] = useState<FirebaseApp>(null);
   const [provider, setProvider] = useState<GoogleAuthProvider>(null);
   const [auth, setAuth] = useState<Auth>(null);
+  const [storage, setStorage] = useState<FirebaseStorage>(null);
 
   useEffect(() => {
-    setFirebase(initializeApp(firebaseConfig));
+    setApp(initializeApp(firebaseConfig));
     setProvider(new GoogleAuthProvider());
     setAuth(getAuth());
+    setStorage(getStorage());
   }, []);
 
   return (
-    <FirebaseContext.Provider value={{ firebase, provider, auth }}>
+    <FirebaseContext.Provider value={{ app, provider, auth, storage }}>
       {children}
     </FirebaseContext.Provider>
   );

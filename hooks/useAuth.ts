@@ -1,21 +1,19 @@
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { FirebaseContext } from "../components/context/FirebaseContext";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 
 function useAuth() {
   const router = useRouter();
 
-  const { auth } = useContext(FirebaseContext);
+  // const { auth } = useContext(FirebaseContext);
 
   useEffect(() => {
-    if(!!auth) {
-      auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-          await router.push("/");
-        }
-      });
-    }
-  }, [auth]);
+    onAuthStateChanged(getAuth(), async (user) => {
+      if (!user) {
+        await router.push("/");
+      }
+    });
+  });
 }
 
 export default useAuth;
