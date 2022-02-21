@@ -10,8 +10,8 @@ const Navbar: React.FC = () => {
           <img src={"/cislogo.png"} alt="CIS Logo" />
         </div>
         <div className="nav-right">
-          <FaShoppingCart size={"30px"} style={{ marginRight: "30px", cursor: "pointer" }} />
-          <ProfilePicture size={"45px"} />
+          <FaShoppingCart size={"25px"} style={{ marginRight: "30px", cursor: "pointer" }} />
+          <ProfilePicture size={"35px"} />
         </div>
       </nav>
 
@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
           align-items: center;
           width: 100vw;
           background: var(--primaryBackgroundColor);
-          padding: 30px 75px;
+          padding: 20px 45px;
           box-shadow: 0px 8px 8px rgba(227, 227, 227, 0.25);
         }
 
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
         }
 
         img {
-          height: 45px;
+          height: 35px;
           cursor: pointer;
         }
       `}</style>

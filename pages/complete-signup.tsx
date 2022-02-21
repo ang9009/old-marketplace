@@ -24,10 +24,10 @@ const CompleteSignupPage: React.FC = () => {
   // const {} = useCompleteSignup();
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
-  const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
   const [previousYearLevel, setPreviousYearLevel] = useState<YearLevelOption>(null);
   const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
   const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
+  const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
 
   //Updates subject options dropdown menu depending on year level, clears menu when current and previous year level are not both senior/secondary
   useEffect(() => {

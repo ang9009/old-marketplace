@@ -4,20 +4,28 @@ import { UserProvider } from "../components/context/UserContext";
 import firebaseConfig from "../config/firebase.config";
 import Head from "next/head";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 
 import "../styles/global.css";
 import "../styles/variables.css";
+import Navbar from "../components/ui/Navbar";
+import Footer from "../components/ui/Footer";
 
 initializeApp(firebaseConfig);
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const path = router.asPath.split("/");
+
   return (
     <>
       <UserProvider>
         <Head>
           <title>CIS Marketplace</title>
         </Head>
+        {path[1] === "home" && <Navbar />}
         <Component {...pageProps} />
+        {path[1] === "home" && <Footer />}
       </UserProvider>
     </>
   );
