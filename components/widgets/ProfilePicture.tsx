@@ -1,24 +1,55 @@
 import React, { useState, useEffect, useContext } from "react";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
+import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 interface Props {
-  imagePath: string;
-  width: string;
-  height: string;
+  size: string;
 }
 
-const ProfilePicture: React.FC<Props> = ({ imagePath, width, height }) => {
+const ProfilePicture: React.FC<Props> = ({ size }) => {
   const [src, setSrc] = useState<string | null>(null);
+  const [docSnap, setDocSnap] = useState<DocumentSnapshot>(null);
 
   useEffect(() => {
-    if (imagePath) {
-      getDownloadURL(ref(getStorage(), imagePath)).then((url) => {
-        setSrc(url);
-      });
-    }
-  }, [imagePath]);
+    onAuthStateChanged(getAuth(), async (user) => {
+      if (user) {
+        const db = getFirestore();
+        const docRef = doc(db, "users", user.uid);
+        getDoc(docRef).then((docSnap) => {
+          setDocSnap(docSnap);
+        });
+      }
+    });
+  }, []);
 
-  return <>{src && <img src={src} alt={src} width={width} height={height} />}</>;
+  useEffect(() => {
+    if (docSnap) {
+      const profileImagePath = docSnap.get("profileImagePath");
+
+      if (profileImagePath) {
+        getDownloadURL(ref(getStorage(), profileImagePath)).then((url) => {
+          setSrc(url);
+        });
+      } else {
+        setSrc("/blank.png");
+      }
+    }
+  }, [docSnap]);
+
+  return (
+    <>
+      <img src={src} alt={src} height={size} width={size} />
+
+      <style jsx>{`
+        img {
+          object-fit: cover;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+      `}</style>
+    </>
+  );
 };
 
 export default ProfilePicture;

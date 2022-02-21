@@ -15,9 +15,13 @@ import { ref, uploadBytes, getStorage } from "firebase/storage";
 
 const CompleteSignupPage: React.FC = () => {
   useAuth();
+
   const { user } = useContext(UserContext);
 
   const router = useRouter();
+
+  // const {subjectOptions, previousYear} = useUpdateSignupOptions();
+  // const {} = useCompleteSignup();
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
@@ -60,7 +64,6 @@ const CompleteSignupPage: React.FC = () => {
       }
 
       //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
-
       const storage = getStorage();
       const snapshot = image ? await uploadBytes(ref(storage, user.id), image.file) : null;
 
@@ -73,9 +76,6 @@ const CompleteSignupPage: React.FC = () => {
         yearLevel: yearLevel.value,
         profileImagePath: snapshot?.metadata?.fullPath ?? null,
       };
-
-      //TODO: remove later
-      // console.log(await getDownloadURL(ref(storage, data.profileImagePath)));
 
       await setDoc(doc(db, "users", user.id), data);
       await router.push("/home");

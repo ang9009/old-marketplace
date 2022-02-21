@@ -14,3 +14,7 @@
 .Toastify__toast-body {
   white-space: nowrap;
 }
+
+body {
+  background: #f9f9f9;
+}
