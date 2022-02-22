@@ -36,7 +36,7 @@ export const seniorSubjectOptions: SubjectOption[] = [
   { label: "Chinese B", value: "chinese b" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
-export const secondarySubjectOptions: SubjectOption[] = [
+export const nonSeniorSubjectOptions: SubjectOption[] = [
   { label: "Chinese", value: "chinese" },
   { label: "English", value: "english" },
   { label: "Math", value: "Math" },

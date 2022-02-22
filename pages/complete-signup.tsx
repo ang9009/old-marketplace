@@ -6,12 +6,13 @@ import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
 import Select, { MultiValue } from "react-select";
 import { yearLevelOptions } from "../data/data";
-import { seniorSubjectOptions, secondarySubjectOptions, SubjectOption, YearLevelOption } from "../data/data";
+import { seniorSubjectOptions, nonSeniorSubjectOptions, SubjectOption, YearLevelOption } from "../data/data";
 import { useDropzone } from "react-dropzone";
 import User from "../types/user.interface";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { ref, uploadBytes, getStorage } from "firebase/storage";
+import useUpdateSignupOptions from "../hooks/useUpdateSignupOptions";
 
 const CompleteSignupPage: React.FC = () => {
   useAuth();
@@ -20,38 +21,17 @@ const CompleteSignupPage: React.FC = () => {
 
   const router = useRouter();
 
-  // const {subjectOptions, previousYear} = useUpdateSignupOptions();
-  // const {} = useCompleteSignup();
+  const {
+    subjects,
+    previousYearLevel,
+    subjectOptions,
+    yearLevel,
+    setSubjects,
+    setPreviousYearLevel,
+    setYearLevel,
+  } = useUpdateSignupOptions();
 
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
-  const [previousYearLevel, setPreviousYearLevel] = useState<YearLevelOption>(null);
-  const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
-  const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
-  const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
-
-  //Updates subject options dropdown menu depending on year level, clears menu when current and previous year level are not both senior/secondary
-  useEffect(() => {
-    if (yearLevel) {
-      const yearLevelValue = parseInt(yearLevel.value);
-      const previousYearLevelValue = previousYearLevel?.value && parseInt(previousYearLevel.value);
-
-      if (yearLevelValue < 12) {
-        setSubjectOptions(secondarySubjectOptions);
-      } else if (yearLevelValue >= 12) {
-        setSubjectOptions(seniorSubjectOptions);
-      }
-
-      if (
-        !(
-          (yearLevelValue < 12 && previousYearLevelValue < 12) ||
-          (yearLevelValue >= 12 && previousYearLevelValue >= 12)
-        )
-      ) {
-        setSubjects(null);
-      }
-    }
-  }, [yearLevel]);
-
   const submit = async (e) => {
     try {
       e.preventDefault();
@@ -149,37 +129,31 @@ const CompleteSignupPage: React.FC = () => {
         .content {
           padding: 50px 100px;
         }
-
         .profile-picture {
           width: 100%;
           height: 100%;
           object-fit: contain;
         }
-
         .dropzone {
           width: 400px;
           height: 400px;
           background: black;
           position: relative;
         }
-
         .dropzone input {
           position: absolute;
           inset: 0;
         }
-
         .dropzone img {
           position: absolute;
           inset: 0;
         }
-
         .dropzone p {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%);
         }
-
         h1 {
           color: var(--primaryColor);
         }
