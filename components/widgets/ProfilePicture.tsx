@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import Link from "next/link";
@@ -14,11 +14,22 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
   const [src, setSrc] = useState<string | null>(null);
   const [docSnap, setDocSnap] = useState<DocumentSnapshot>(null);
   const router = useRouter();
+  const auth = getAuth();
+  const db = getFirestore();
+
+  const logOut = () => {
+    signOut(auth)
+      .then(async () => {
+        await router.push("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
-    onAuthStateChanged(getAuth(), async (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const db = getFirestore();
         const docRef = doc(db, "users", user.uid);
         getDoc(docRef).then((docSnap) => {
           setDocSnap(docSnap);
@@ -46,7 +57,7 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
       <Menu menuButton={<img src={src} alt={src} height={size} width={size} />} transition align={"end"}>
         <MenuItem>Profile</MenuItem>
         <MenuItem onClick={async () => router.push("/home/my-listings")}>My listings</MenuItem>
-        <MenuItem>Close Window</MenuItem>
+        <MenuItem onClick={logOut}>Sign out</MenuItem>
       </Menu>
 
       <style jsx>{`

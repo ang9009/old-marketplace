@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { MultiValue } from "react-select";
-import { nonSeniorSubjectOptions, seniorSubjectOptions, SubjectOption, YearLevelOption } from "../data/data";
+import { nonSeniorSubjectOptions, seniorSubjectOptions, Option } from "../data/data";
 
 function useUpdateSignupOptions() {
-  const [subjects, setSubjects] = useState<MultiValue<SubjectOption>>(null);
-  const [subjectOptions, setSubjectOptions] = useState<SubjectOption[]>(seniorSubjectOptions);
-  const [previousYearLevel, setPreviousYearLevel] = useState<YearLevelOption>(null);
-  const [yearLevel, setYearLevel] = useState<YearLevelOption>(null);
+  const [subjects, setSubjects] = useState<MultiValue<Option>>(null);
+  const [subjectOptions, setSubjectOptions] = useState<Option[]>(seniorSubjectOptions);
+  const [previousYearLevel, setPreviousYearLevel] = useState<Option>(null);
+  const [yearLevel, setYearLevel] = useState<Option>(null);
 
   //Updates subject options dropdown menu depending on year level, clears menu when current and previous year level are not both senior/secondary
   useEffect(() => {

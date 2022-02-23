@@ -1,7 +1,6 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
 import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
-import { UserContext } from "../components/context/UserContext";
+import { doc, getDoc, getFirestore, setDoc, DocumentSnapshot, DocumentData } from "firebase/firestore";
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
 import Select, { MultiValue } from "react-select";
@@ -13,14 +12,14 @@ import { useRouter } from "next/router";
 import { ref, uploadBytes, getStorage } from "firebase/storage";
 import useUpdateSignupOptions from "../hooks/useUpdateSignupOptions";
 import useRedirectWhenLoggedIn from "../hooks/useRedirectWhenLoggedIn";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import useGetUser from "../hooks/useGetUser";
 
 const CompleteSignupPage: React.FC = () => {
   useRedirectWhenLoggedOut();
-
-  const { user } = useContext(UserContext);
-
   const router = useRouter();
-
+  const db = getFirestore();
+  const auth = getAuth();
   const {
     subjects,
     previousYearLevel,
@@ -30,11 +29,14 @@ const CompleteSignupPage: React.FC = () => {
     setPreviousYearLevel,
     setYearLevel,
   } = useUpdateSignupOptions();
-
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
+  const userDocSnap = useGetUser();
+
   const submit = async (e) => {
     try {
       e.preventDefault();
+
+      if (!userDocSnap) return;
 
       if (!yearLevel.value || !subjects || subjects.length === 0) {
         toast.error("One or more fields are empty!", {
@@ -45,17 +47,19 @@ const CompleteSignupPage: React.FC = () => {
 
       //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
       const storage = getStorage();
-      const snapshot = image ? await uploadBytes(ref(storage, user.id), image.file) : null;
+      const snapshot = image
+        ? await uploadBytes(ref(storage, userDocSnap.get("id") as string), image.file)
+        : null;
 
       const db = getFirestore();
 
       const newUser: User = {
-        name: user.name,
-        email: user.email,
+        name: userDocSnap.get("name") as string,
+        email: userDocSnap.get("email") as string,
         phoneNumber: e.target.phoneNumber.value,
         subjects: subjects.map((subject) => subject.value),
         yearLevel: yearLevel.value,
-        id: user.id,
+        id: userDocSnap.get("id") as string,
         profileImagePath: snapshot?.metadata?.fullPath ?? null,
         hasCompletedSignup: true,
       };

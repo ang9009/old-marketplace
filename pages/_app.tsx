@@ -1,6 +1,5 @@
 import { AppProps } from "next/app";
 import { initializeApp } from "firebase/app";
-import { UserProvider } from "../components/context/UserContext";
 import firebaseConfig from "../config/firebase.config";
 import Head from "next/head";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,16 +20,14 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <UserProvider>
-        <Head>
-          <title>CIS Marketplace</title>
-        </Head>
-        <div style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
-          {path[1] === "home" && <Navbar />}
-          <Component {...pageProps} />
-        </div>
-        {path[1] === "home" && <Footer />}
-      </UserProvider>
+      <Head>
+        <title>CIS Marketplace</title>
+      </Head>
+      <div style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
+        {path[1] === "home" && <Navbar />}
+        <Component {...pageProps} />
+      </div>
+      {path[1] === "home" && <Footer />}
     </>
   );
 }
