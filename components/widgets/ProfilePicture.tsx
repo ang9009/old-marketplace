@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import Link from "next/link";
 
 interface Props {
   size: string;
@@ -10,6 +13,7 @@ interface Props {
 const ProfilePicture: React.FC<Props> = ({ size }) => {
   const [src, setSrc] = useState<string | null>(null);
   const [docSnap, setDocSnap] = useState<DocumentSnapshot>(null);
+  const router = useRouter();
 
   useEffect(() => {
     onAuthStateChanged(getAuth(), async (user) => {
@@ -39,7 +43,11 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
 
   return (
     <>
-      <img src={src} alt={src} height={size} width={size} />
+      <Menu menuButton={<img src={src} alt={src} height={size} width={size} />} transition align={"end"}>
+        <MenuItem>Profile</MenuItem>
+        <MenuItem onClick={async () => router.push("/home/my-listings")}>My listings</MenuItem>
+        <MenuItem>Close Window</MenuItem>
+      </Menu>
 
       <style jsx>{`
         img {

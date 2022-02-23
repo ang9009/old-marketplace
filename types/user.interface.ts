@@ -1,10 +1,9 @@
-import { UploadResult } from "firebase/storage";
+import BaseUser from "./baseUser.interface";
 
-export default interface User {
-  email: string;
-  name: string;
+export default interface User extends BaseUser {
   phoneNumber: string;
   subjects: string[];
   yearLevel: string;
   profileImagePath: string;
+  hasCompletedSignup: boolean;
 }

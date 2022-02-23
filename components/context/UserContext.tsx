@@ -1,27 +1,17 @@
 import React, { useState, SetStateAction, Dispatch } from "react";
 import { FirebaseApp } from "firebase/app";
 import { Auth, GoogleAuthProvider } from "firebase/auth";
-
-interface User {
-  name: string;
-  email: string;
-  id: string;
-}
+import BaseUser from "../../types/baseUser.interface";
 
 interface Context {
-  user: User;
-  setUser: Dispatch<SetStateAction<User>>;
+  user: BaseUser;
+  setUser: Dispatch<SetStateAction<BaseUser>>;
 }
 
 export const UserContext = React.createContext<Context>(null);
 
 export const UserProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<BaseUser>(null);
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };
-

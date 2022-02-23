@@ -20,7 +20,7 @@ interface Props {
   };
 }
 
-const PrimaryTextInput: React.FC<Props> = ({
+const LargeTextInput: React.FC<Props> = ({
   placeholder,
   name,
   backgroundColor = "var(--secondaryBackgroundColor)",
@@ -88,4 +88,4 @@ const PrimaryTextInput: React.FC<Props> = ({
   );
 };
 
-export default PrimaryTextInput;
+export default LargeTextInput;

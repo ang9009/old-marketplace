@@ -1,21 +1,21 @@
 import React, { useContext, useState, useCallback, useEffect } from "react";
-import useAuth from "../hooks/useAuth";
+import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { UserContext } from "../components/context/UserContext";
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
 import Select, { MultiValue } from "react-select";
 import { yearLevelOptions } from "../data/data";
-import { seniorSubjectOptions, nonSeniorSubjectOptions, SubjectOption, YearLevelOption } from "../data/data";
 import { useDropzone } from "react-dropzone";
 import User from "../types/user.interface";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { ref, uploadBytes, getStorage } from "firebase/storage";
 import useUpdateSignupOptions from "../hooks/useUpdateSignupOptions";
+import useRedirectWhenLoggedIn from "../hooks/useRedirectWhenLoggedIn";
 
 const CompleteSignupPage: React.FC = () => {
-  useAuth();
+  useRedirectWhenLoggedOut();
 
   const { user } = useContext(UserContext);
 
@@ -38,7 +38,7 @@ const CompleteSignupPage: React.FC = () => {
 
       if (!yearLevel.value || !subjects || subjects.length === 0) {
         toast.error("One or more fields are empty!", {
-          autoClose: 2000,
+          autoClose: 3000,
         });
         return;
       }
@@ -48,16 +48,19 @@ const CompleteSignupPage: React.FC = () => {
       const snapshot = image ? await uploadBytes(ref(storage, user.id), image.file) : null;
 
       const db = getFirestore();
-      const data: User = {
+
+      const newUser: User = {
         name: user.name,
         email: user.email,
         phoneNumber: e.target.phoneNumber.value,
         subjects: subjects.map((subject) => subject.value),
         yearLevel: yearLevel.value,
+        id: user.id,
         profileImagePath: snapshot?.metadata?.fullPath ?? null,
+        hasCompletedSignup: true,
       };
 
-      await setDoc(doc(db, "users", user.id), data);
+      await setDoc(doc(db, "users", newUser.id), newUser);
       await router.push("/home");
     } catch (err) {
       console.log(err);
@@ -83,11 +86,11 @@ const CompleteSignupPage: React.FC = () => {
     <>
       <SignupContainer>
         <form className="content" onSubmit={submit}>
-          <h1>Complete your sign up</h1>
+          <h1 className="form-title">Complete your sign up</h1>
 
           <PrimaryTextInput name={"phoneNumber"} placeholder={"Phone number"} />
 
-          <p>Year level</p>
+          <p className="form-field-heading">Year level</p>
           <Select
             className="basic-single"
             options={yearLevelOptions}
@@ -102,7 +105,7 @@ const CompleteSignupPage: React.FC = () => {
             }}
           />
 
-          <p>Subjects taken</p>
+          <p className="form-field-heading">Subjects taken</p>
           <Select
             isMulti
             className="basic-multi-select"
@@ -113,10 +116,10 @@ const CompleteSignupPage: React.FC = () => {
             isDisabled={!yearLevel}
           />
 
-          <p>Profile picture</p>
+          <p className="form-field-heading">Profile picture</p>
           <div {...getRootProps()} className="dropzone">
             <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
+            <p>Drag files here or click to select files</p>
             <img src={image?.url} alt={image?.file?.name} className="profile-picture" />
           </div>
 
@@ -127,35 +130,47 @@ const CompleteSignupPage: React.FC = () => {
 
       <style jsx>{`
         .content {
-          padding: 50px 100px;
+          padding: 100px 80px;
         }
+
         .profile-picture {
           width: 100%;
           height: 100%;
           object-fit: contain;
         }
+
         .dropzone {
           width: 400px;
           height: 400px;
-          background: black;
+          background: var(--secondaryBackgroundColor);
+          border: none;
+          //border: 2px solid #3c3c3c;
           position: relative;
         }
+
         .dropzone input {
           position: absolute;
           inset: 0;
         }
+
         .dropzone img {
           position: absolute;
           inset: 0;
         }
+
         .dropzone p {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%);
         }
+
         h1 {
           color: var(--primaryColor);
+        }
+
+        button {
+          margin-top: 15px;
         }
       `}</style>
     </>

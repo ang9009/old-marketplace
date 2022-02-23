@@ -9,14 +9,15 @@ const Footer: React.FC = () => {
 
       <style jsx>{`
         footer {
-          margin-top: 35px;
           background: #000000;
           padding: 30px;
+          margin-top: 35px;
         }
 
         p {
           text-align: center;
-          color: white;
+          font-weight: 800;
+          color: #606060;
         }
       `}</style>
     </>

@@ -1,9 +1,9 @@
-export interface YearLevelOption {
+export interface Option {
   value: string;
   label: string;
 }
 
-export const yearLevelOptions: YearLevelOption[] = [
+export const yearLevelOptions: Option[] = [
   { label: "Y7", value: "7" },
   { label: "Y8", value: "8" },
   { label: "Y9", value: "9" },
@@ -13,12 +13,7 @@ export const yearLevelOptions: YearLevelOption[] = [
   { label: "Y13", value: "13" },
 ];
 
-export interface SubjectOption {
-  value: string;
-  label: string;
-}
-
-export const seniorSubjectOptions: SubjectOption[] = [
+export const seniorSubjectOptions: Option[] = [
   { label: "Math AI", value: "math ai" },
   { label: "Math AA", value: "math aa" },
   { label: "English L&L", value: "english l&l" },
@@ -36,7 +31,7 @@ export const seniorSubjectOptions: SubjectOption[] = [
   { label: "Chinese B", value: "chinese b" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
-export const nonSeniorSubjectOptions: SubjectOption[] = [
+export const nonSeniorSubjectOptions: Option[] = [
   { label: "Chinese", value: "chinese" },
   { label: "English", value: "english" },
   { label: "Math", value: "Math" },
@@ -45,3 +40,10 @@ export const nonSeniorSubjectOptions: SubjectOption[] = [
   { label: "Spanish", value: "spanish" },
   { label: "French", value: "french" },
 ].sort((a, b) => a.label.localeCompare(b.label));
+
+export const listingTypeOptions: Option[] = [
+  { label: "Textbook", value: "textbook" },
+  { label: "Notes", value: "notes" },
+  { label: "Subscription", value: "subscription" },
+  { label: "Miscellaneous", value: "miscellaneous" },
+];

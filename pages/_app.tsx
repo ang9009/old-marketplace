@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 
 import "../styles/global.css";
 import "../styles/variables.css";
+import "@szhsin/react-menu/dist/index.css";
+import "@szhsin/react-menu/dist/transitions/slide.css";
 import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
 
@@ -23,8 +25,10 @@ function App({ Component, pageProps }: AppProps) {
         <Head>
           <title>CIS Marketplace</title>
         </Head>
-        {path[1] === "home" && <Navbar />}
-        <Component {...pageProps} />
+        <div style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
+          {path[1] === "home" && <Navbar />}
+          <Component {...pageProps} />
+        </div>
         {path[1] === "home" && <Footer />}
       </UserProvider>
     </>

@@ -4,8 +4,12 @@ import SignupContainer from "../components/ui/SignupContainer";
 import { provider } from "../config/firebase.config";
 import { signInWithPopup, getAdditionalUserInfo, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import useRedirectWhenLoggedIn from "../hooks/useRedirectWhenLoggedIn";
+import baseUser from "../types/baseUser.interface";
 
 const SignInPage: React.FC = () => {
+  // useRedirectWhenLoggedIn();
   const router = useRouter();
 
   const { setUser } = useContext(UserContext);
@@ -14,10 +18,24 @@ const SignInPage: React.FC = () => {
     signInWithPopup(getAuth(), provider)
       .then(async (result) => {
         const additionalInfo = getAdditionalUserInfo(result);
+        const authUser = result.user;
+
+        if (!authUser.email.endsWith("cis.edu.hk")) {
+          toast.error("You are not a CIS student!", {
+            autoClose: 3000,
+          });
+          return;
+        }
 
         if (additionalInfo.isNewUser) {
-          const user = result.user;
-          setUser({ name: user.displayName, id: user.uid, email: user.email });
+          const incompleteUser: baseUser = {
+            email: authUser.email,
+            name: authUser.displayName,
+            id: authUser.uid,
+            hasCompletedSignup: false,
+          };
+
+          setUser(incompleteUser);
           await router.push("/complete-signup");
         } else {
           await router.push("/home");
@@ -35,22 +53,23 @@ const SignInPage: React.FC = () => {
           <h1>CIS Marketplace</h1>
           <button onClick={signIn}>Continue with Google</button>
         </div>
+        <ToastContainer />
       </SignupContainer>
 
       <style jsx>{`
         button {
           margin-top: 10px;
           padding: 15px;
+          border: 2px solid var(--buttonBorderColor);
           background: var(--primaryBackgroundColor);
-          border: 2px solid var(--secondaryBackgroundColor);
-          color: #626262;
+          border-radius: 5px;
           cursor: pointer;
+          transition: all 0.2s;
           width: 100%;
         }
 
         button:hover {
           background: var(--secondaryBackgroundColor);
-          transition: all 0.2s;
         }
 
         .content {

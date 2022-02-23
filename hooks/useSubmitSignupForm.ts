@@ -5,10 +5,22 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 import User from "../types/user.interface";
 import { useRouter } from "next/router";
 import { UserContext } from "../components/context/UserContext";
+import { Option } from "../data/data";
+import { MultiValue } from "react-select";
 
-function useSubmitSignupForm({ yearLevel, subjects, user }) {
+interface HookProps {
+  yearLevel: Option;
+  subjects: MultiValue<Option>;
+  image: { url: string; file: File };
+}
+
+function useSubmitSignupForm({ yearLevel, subjects, image }: HookProps) {
   const router = useRouter();
-  const [image, setImage] = useState<{ url: string; file: File } | null>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<any>(null);
+
+  const { user } = useContext(UserContext);
 
   const submit = async (e) => {
     try {
@@ -20,6 +32,9 @@ function useSubmitSignupForm({ yearLevel, subjects, user }) {
         });
         return;
       }
+
+      setIsLoading(true);
+      setError(null);
 
       //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
       const storage = getStorage();
@@ -37,12 +52,15 @@ function useSubmitSignupForm({ yearLevel, subjects, user }) {
 
       await setDoc(doc(db, "users", user.id), data);
       await router.push("/home");
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
+      setIsLoading(false);
+      setError(err);
     }
   };
 
-  return { image, setImage, submit };
+  return { submit, isLoading, error };
 }
 
 export default useSubmitSignupForm;

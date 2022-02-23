@@ -18,3 +18,17 @@
 body {
   background: var(--tertiaryBackgroundColor);
 }
+
+.form-field-heading {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.form-title {
+}
+
+.page-container {
+  margin: 0 auto;
+  width: 80vw;
+}
