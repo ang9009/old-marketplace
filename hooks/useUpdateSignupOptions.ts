@@ -35,7 +35,6 @@ function useUpdateSignupOptions() {
 
   return {
     subjects,
-    previousYearLevel,
     subjectOptions,
     yearLevel,
     setSubjects,

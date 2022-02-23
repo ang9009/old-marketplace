@@ -1,75 +1,23 @@
-import React, { useContext, useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import { ToastContainer } from "react-toastify";
+import Select from "react-select";
+
 import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
-import { doc, getDoc, getFirestore, setDoc, DocumentSnapshot, DocumentData } from "firebase/firestore";
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
-import Select, { MultiValue } from "react-select";
 import { yearLevelOptions } from "../data/data";
-import { useDropzone } from "react-dropzone";
-import User from "../types/user.interface";
-import { ToastContainer, toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { ref, uploadBytes, getStorage } from "firebase/storage";
 import useUpdateSignupOptions from "../hooks/useUpdateSignupOptions";
-import useRedirectWhenLoggedIn from "../hooks/useRedirectWhenLoggedIn";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import useSubmitSignupForm from "../hooks/useSubmitSignupForm";
 import useGetUser from "../hooks/useGetUser";
 
 const CompleteSignupPage: React.FC = () => {
   useRedirectWhenLoggedOut();
-  const router = useRouter();
-  const db = getFirestore();
-  const auth = getAuth();
-  const {
-    subjects,
-    previousYearLevel,
-    subjectOptions,
-    yearLevel,
-    setSubjects,
-    setPreviousYearLevel,
-    setYearLevel,
-  } = useUpdateSignupOptions();
+  const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
+    useUpdateSignupOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const userDocSnap = useGetUser();
-
-  const submit = async (e) => {
-    try {
-      e.preventDefault();
-
-      if (!userDocSnap) return;
-
-      if (!yearLevel.value || !subjects || subjects.length === 0) {
-        toast.error("One or more fields are empty!", {
-          autoClose: 3000,
-        });
-        return;
-      }
-
-      //If the user uploads an image, upload it to firebase. If not, then assign them the default profile picture
-      const storage = getStorage();
-      const snapshot = image
-        ? await uploadBytes(ref(storage, userDocSnap.get("id") as string), image.file)
-        : null;
-
-      const db = getFirestore();
-
-      const newUser: User = {
-        name: userDocSnap.get("name") as string,
-        email: userDocSnap.get("email") as string,
-        phoneNumber: e.target.phoneNumber.value,
-        subjects: subjects.map((subject) => subject.value),
-        yearLevel: yearLevel.value,
-        id: userDocSnap.get("id") as string,
-        profileImagePath: snapshot?.metadata?.fullPath ?? null,
-        hasCompletedSignup: true,
-      };
-
-      await setDoc(doc(db, "users", newUser.id), newUser);
-      await router.push("/home");
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const { isLoading, submit } = useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image });
 
   //On drop listener for the image dropzone
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -127,7 +75,9 @@ const CompleteSignupPage: React.FC = () => {
             <img src={image?.url} alt={image?.file?.name} className="profile-picture" />
           </div>
 
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={isLoading}>
+            Submit
+          </button>
         </form>
         <ToastContainer />
       </SignupContainer>

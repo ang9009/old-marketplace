@@ -1,12 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import SignupContainer from "../components/ui/SignupContainer";
-import { provider } from "../config/firebase.config";
-import { signInWithPopup, getAdditionalUserInfo, getAuth, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/router";
-import { ToastContainer, toast } from "react-toastify";
-import useRedirectWhenLoggedIn from "../hooks/useRedirectWhenLoggedIn";
-import baseUser from "../types/baseUser.interface";
-import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { ToastContainer } from "react-toastify";
+
 import useGetUser from "../hooks/useGetUser";
 import useCompletedSignupRedirect from "../hooks/useCompletedSignupRedirect";
 import useSignIn from "../hooks/useSignIn";

@@ -7,16 +7,25 @@
   font-family: "Manrope", serif;
 }
 
+body {
+  background: var(--tertiaryBackgroundColor);
+}
+
+button {
+  transition: opacity 0.2s;
+}
+
+button:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
 .Toastify__toast-container {
   width: min-content;
 }
 
 .Toastify__toast-body {
   white-space: nowrap;
-}
-
-body {
-  background: var(--tertiaryBackgroundColor);
 }
 
 .form-field-heading {
