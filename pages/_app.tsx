@@ -12,6 +12,8 @@ import "../styles/global.css";
 import "../styles/variables.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
+import { ToastContainer } from "react-toastify";
+import React from "react";
 
 initializeApp(firebaseConfig);
 
@@ -26,6 +28,7 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <div style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
         {path[1] === "home" && <Navbar />}
+        <ToastContainer />
         <Component {...pageProps} />
       </div>
       {path[1] === "home" && <Footer />}

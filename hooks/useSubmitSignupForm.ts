@@ -16,6 +16,7 @@ interface Props {
 
 function useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image }: Props) {
   const router = useRouter();
+  const db = getFirestore();
   const [isLoading, setIsLoading] = useState(null);
 
   const submit = async (e) => {
@@ -43,8 +44,6 @@ function useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image }: Props)
       const snapshot = image
         ? await uploadBytes(ref(storage, userDocSnap.get("id") as string), image.file)
         : null;
-
-      const db = getFirestore();
 
       const newUser: User = {
         name: userDocSnap.get("name") as string,

@@ -5,5 +5,6 @@ export default interface User extends BaseUser {
   subjects: string[];
   yearLevel: string;
   profileImagePath: string;
+  id: string;
   hasCompletedSignup: boolean;
 }

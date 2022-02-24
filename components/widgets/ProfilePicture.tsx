@@ -57,6 +57,7 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
       <Menu menuButton={<img src={src} alt={src} height={size} width={size} />} transition align={"end"}>
         <MenuItem>Profile</MenuItem>
         <MenuItem onClick={async () => router.push("/home/my-listings")}>My listings</MenuItem>
+        <MenuItem onClick={async () => router.push("/home/my-listings/add-listing")}>Add listing</MenuItem>
         <MenuItem onClick={logOut}>
           <span className="sign-out-option">Sign out</span>
         </MenuItem>

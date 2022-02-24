@@ -69,7 +69,6 @@ const CompleteSignupPage: React.FC = () => {
 
           <PrimaryButton text={"Submit"} disabled={isLoading} mt={"30px"} buttonType={"submit"} />
         </form>
-        <ToastContainer />
       </SignupContainer>
 
       <style jsx>{`

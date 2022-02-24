@@ -8,6 +8,7 @@ import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import ImageDropzone from "../../../components/widgets/ImageDropzone";
 import useUpdateSubjectOptions from "../../../hooks/useUpdateSubjectOptions";
 import LargeTextInput from "../../../components/widgets/PrimaryTextArea";
+import useSubmitAddListingForm from "../../../hooks/useSubmitAddListingForm";
 
 const AddListing: React.FC = () => {
   const [listingType, setListingType] = useState<Option>(null);
@@ -15,9 +16,16 @@ const AddListing: React.FC = () => {
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions();
 
+  const { addListing } = useSubmitAddListingForm({
+    listingType: listingType?.value,
+    yearLevel: yearLevel?.value,
+    subject: (subjects as Option)?.value,
+    image,
+  });
+
   return (
     <>
-      <form className="page-container">
+      <form className="page-container" onSubmit={addListing}>
         <h1 className="form-title">Add listing</h1>
 
         <PrimaryTextInput placeholder={"Listing name"} name={"name"} />
@@ -30,6 +38,10 @@ const AddListing: React.FC = () => {
           value={listingType}
           onChange={(e) => {
             setListingType(e);
+
+            if (e.value === "miscellaneous") {
+              setSubjects(null);
+            }
           }}
           styles={reactSelectStyles}
         />
@@ -63,7 +75,7 @@ const AddListing: React.FC = () => {
           </>
         )}
 
-        <LargeTextInput placeholder={"Listing description"} name={"name"} height={300} />
+        <LargeTextInput placeholder={"Listing description"} name={"description"} height={300} />
 
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />
