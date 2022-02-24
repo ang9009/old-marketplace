@@ -23,9 +23,9 @@ interface Props {
 const PrimaryTextInput: React.FC<Props> = ({
   placeholder,
   name,
-  backgroundColor = "var(--secondaryBackgroundColor)",
-  border = "none",
-  padding = "17px 25px",
+  backgroundColor = "var(--primaryBackgroundColor)",
+  border = "1px solid var(--primaryBorderColor);",
+  padding = "17px 10px",
   margin = "0",
   borderRadius = "12px",
   fontSize = "0.8rem",
@@ -33,14 +33,14 @@ const PrimaryTextInput: React.FC<Props> = ({
   minWidth = "0",
   required = true,
   inputType = "text",
-  boxShadow = "0px 4px 8px rgba(103, 103, 103, 0.25)",
+  boxShadow = "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;",
   register,
   error,
 }) => {
   return (
     <>
       <div>
-        <label htmlFor={name}>{placeholder}</label>
+        <p className="form-field-heading">{placeholder}</p>
         <input
           className={error?.message && "invalid"}
           type={inputType}
@@ -54,11 +54,6 @@ const PrimaryTextInput: React.FC<Props> = ({
       </div>
 
       <style jsx>{`
-        label {
-          font-size: 15px;
-          font-weight: 800;
-        }
-
         div {
           margin: ${margin};
           width: ${width};
@@ -67,17 +62,23 @@ const PrimaryTextInput: React.FC<Props> = ({
 
         input {
           background: ${backgroundColor};
-          margin-top: 5px;
-          border: ${border};
+          outline: ${border};
+          border: none;
           padding: ${padding};
           border-radius: ${borderRadius};
           font-size: ${fontSize};
           box-shadow: ${boxShadow};
+          transition: outline 0.05s;
           width: 100%;
         }
 
+        input:focus {
+          outline: 1px solid #2683ff;
+          outline-offset: 0;
+        }
+
         input.invalid {
-          border-color: var(--errorColor);
+          outline-color: var(--errorColor);
         }
 
         .err-msg {

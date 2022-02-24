@@ -20,6 +20,7 @@ function useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image }: Props)
 
   const submit = async (e) => {
     setIsLoading(true);
+    console.log(e);
 
     try {
       e.preventDefault();

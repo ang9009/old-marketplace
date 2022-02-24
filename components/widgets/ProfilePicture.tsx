@@ -57,7 +57,9 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
       <Menu menuButton={<img src={src} alt={src} height={size} width={size} />} transition align={"end"}>
         <MenuItem>Profile</MenuItem>
         <MenuItem onClick={async () => router.push("/home/my-listings")}>My listings</MenuItem>
-        <MenuItem onClick={logOut}>Sign out</MenuItem>
+        <MenuItem onClick={logOut}>
+          <span className="sign-out-option">Sign out</span>
+        </MenuItem>
       </Menu>
 
       <style jsx>{`
@@ -65,6 +67,10 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
           object-fit: cover;
           border-radius: 50%;
           cursor: pointer;
+        }
+
+        .sign-out-option {
+          color: red;
         }
       `}</style>
     </>

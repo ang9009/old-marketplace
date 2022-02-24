@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         footer {
           background: #000000;
           padding: 30px;
-          margin-top: 35px;
+          margin-top: 80px;
         }
 
         p {

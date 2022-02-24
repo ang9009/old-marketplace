@@ -31,10 +31,12 @@ button:disabled {
 .form-field-heading {
   font-size: 15px;
   font-weight: 800;
-  margin-bottom: 5px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .form-title {
+  color: var(--primaryColor);
 }
 
 .page-container {

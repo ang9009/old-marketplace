@@ -7,10 +7,8 @@ import useCompletedSignupRedirect from "../hooks/useCompletedSignupRedirect";
 import useSignIn from "../hooks/useSignIn";
 
 const SignInPage: React.FC = () => {
-  const userDocSnap = useGetUser();
+  useCompletedSignupRedirect();
   const signIn = useSignIn();
-
-  useCompletedSignupRedirect(userDocSnap);
 
   return (
     <>
@@ -26,7 +24,7 @@ const SignInPage: React.FC = () => {
         button {
           margin-top: 10px;
           padding: 15px;
-          border: 2px solid var(--buttonBorderColor);
+          border: 2px solid var(--primaryBorderColor);
           background: var(--primaryBackgroundColor);
           border-radius: 5px;
           cursor: pointer;

@@ -4,6 +4,7 @@
   --secondaryBackgroundColor: #eaeaea;
   --tertiaryBackgroundColor: #f9f9f9;
   --secondaryTextColor: #a5a5a5;
-  --buttonBorderColor: #bebebe;
+  --primaryBorderColor: #bebebe;
+  --primaryButtonColor: #db4d4d;
   --navbarHeight: 80px;
 }

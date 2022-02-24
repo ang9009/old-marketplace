@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import useGetUser from "./useGetUser";
 
-function useCompletedSignupRedirect(userDocSnap) {
+function useCompletedSignupRedirect() {
   const router = useRouter();
+  const userDocSnap = useGetUser();
 
   useEffect(() => {
     if (userDocSnap) {

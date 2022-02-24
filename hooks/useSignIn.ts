@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { getAdditionalUserInfo, getAuth, signInWithPopup } from "firebase/auth";
+import { getAdditionalUserInfo, getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { provider } from "../config/firebase.config";
 import { toast } from "react-toastify";
 import baseUser from "../types/baseUser.interface";
@@ -10,15 +10,15 @@ function useRedirectWhenLoggedIn() {
   const db = getFirestore();
 
   const signIn = () => {
+    const auth = getAuth();
+
     signInWithPopup(getAuth(), provider)
       .then(async (result) => {
         const additionalInfo = getAdditionalUserInfo(result);
         const authUser = result.user;
 
         if (!authUser.email.endsWith("cis.edu.hk")) {
-          toast.error("You are not a CIS student!", {
-            autoClose: 3000,
-          });
+          await signOut(auth);
           return;
         }
 
