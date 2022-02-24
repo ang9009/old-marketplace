@@ -68,7 +68,7 @@ const PrimaryTextInput: React.FC<Props> = ({
           border-radius: ${borderRadius};
           font-size: ${fontSize};
           box-shadow: ${boxShadow};
-          transition: outline 0.05s;
+          transition: all 0.05s;
           width: 100%;
         }
 

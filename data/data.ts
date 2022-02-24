@@ -34,7 +34,7 @@ export const seniorSubjectOptions: Option[] = [
 export const nonSeniorSubjectOptions: Option[] = [
   { label: "Chinese", value: "chinese" },
   { label: "English", value: "english" },
-  { label: "Math", value: "Math" },
+  { label: "Math", value: "math" },
   { label: "InSo", value: "InSo" },
   { label: "Science", value: "science" },
   { label: "Spanish", value: "spanish" },

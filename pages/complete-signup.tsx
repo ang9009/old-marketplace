@@ -21,7 +21,12 @@ const CompleteSignupPage: React.FC = () => {
     useUpdateSubjectOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const userDocSnap = useGetUser();
-  const { isLoading, submit } = useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image });
+  const { isLoading, submit } = useSubmitSignupForm({
+    userDocSnap,
+    yearLevel,
+    subjects: subjects as MultiValue<Option>,
+    image,
+  });
 
   return (
     <>

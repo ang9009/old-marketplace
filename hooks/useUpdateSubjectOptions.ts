@@ -3,7 +3,7 @@ import { MultiValue } from "react-select";
 import { nonSeniorSubjectOptions, seniorSubjectOptions, Option } from "../data/data";
 
 function useUpdateSubjectOptions() {
-  const [subjects, setSubjects] = useState<MultiValue<Option>>(null);
+  const [subjects, setSubjects] = useState<MultiValue<Option> | Option>(null);
   const [subjectOptions, setSubjectOptions] = useState<Option[]>(seniorSubjectOptions);
   const [previousYearLevel, setPreviousYearLevel] = useState<Option>(null);
   const [yearLevel, setYearLevel] = useState<Option>(null);
