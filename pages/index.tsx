@@ -1,15 +1,16 @@
 import React from "react";
-import SignupContainer from "../components/ui/SignupContainer";
 import { ToastContainer } from "react-toastify";
 
+import SignupContainer from "../components/ui/SignupContainer";
 import useGetUser from "../hooks/useGetUser";
 import useCompletedSignupRedirect from "../hooks/useCompletedSignupRedirect";
 import useSignIn from "../hooks/useSignIn";
 
 const SignInPage: React.FC = () => {
   const userDocSnap = useGetUser();
-  useCompletedSignupRedirect(userDocSnap);
   const signIn = useSignIn();
+
+  useCompletedSignupRedirect(userDocSnap);
 
   return (
     <>

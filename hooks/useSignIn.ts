@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { getAdditionalUserInfo, getAuth, onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import { getAdditionalUserInfo, getAuth, signInWithPopup } from "firebase/auth";
 import { provider } from "../config/firebase.config";
 import { toast } from "react-toastify";
 import baseUser from "../types/baseUser.interface";

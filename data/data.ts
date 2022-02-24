@@ -46,4 +46,4 @@ export const listingTypeOptions: Option[] = [
   { label: "Notes", value: "notes" },
   { label: "Subscription", value: "subscription" },
   { label: "Miscellaneous", value: "miscellaneous" },
-];
+].sort((a, b) => a.label.localeCompare(b.label));

@@ -7,14 +7,14 @@ import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
 import SignupContainer from "../components/ui/SignupContainer";
 import { yearLevelOptions } from "../data/data";
-import useUpdateSignupOptions from "../hooks/useUpdateSignupOptions";
+import useUpdateSubjectOptions from "../hooks/useUpdateSubjectOptions";
 import useSubmitSignupForm from "../hooks/useSubmitSignupForm";
 import useGetUser from "../hooks/useGetUser";
 
 const CompleteSignupPage: React.FC = () => {
   useRedirectWhenLoggedOut();
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
-    useUpdateSignupOptions();
+    useUpdateSubjectOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const userDocSnap = useGetUser();
   const { isLoading, submit } = useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image });
