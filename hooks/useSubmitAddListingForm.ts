@@ -3,6 +3,7 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
+
 import Listing from "../types/listing.interface";
 import { useRouter } from "next/router";
 import useGetUser from "./useGetUser";
@@ -11,7 +12,7 @@ import Condition from "../types/condition.enum";
 
 interface Props {
   listingType: string;
-  yearLevel: string;
+  yearLevel: number;
   subject?: string;
   image: { url: string; file: File };
   condition: Condition;
@@ -28,6 +29,7 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
     e.preventDefault();
 
     const listingName = e.target.name.value;
+    const listingPrice = parseInt(e.target.price.value);
     const listingDescription = e.target.description.value;
 
     if (
@@ -36,6 +38,7 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
       !listingType ||
       !yearLevel ||
       !image ||
+      !listingPrice ||
       (!subject && listingType !== "miscellaneous")
     ) {
       toast.error("One or more fields are empty!", {
@@ -62,6 +65,7 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
         subject: listingType === "miscellaneous" ? null : subject,
         state: ListingState.AVAILABLE,
         condition: condition,
+        price: listingPrice,
         imagePath: snapshot?.metadata?.fullPath,
       };
 

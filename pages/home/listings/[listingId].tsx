@@ -1,61 +1,90 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import Zoom from "react-medium-image-zoom";
-import { useRouter } from "next/router";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { GetServerSideProps } from "next";
+import Listing from "../../../types/listing.interface";
 
-const ListingPage: React.FC = () => {
-  const [src, setSrc] = useState<string | null>(null);
-  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
-  const [listingDocSnap, setListingDocSnap] = useState<DocumentSnapshot>();
+import capitalise from "../../../utils/capitalise";
+import Condition from "../../../types/condition.enum";
 
-  const router = useRouter();
-  const listingId = router.query.listingId as string;
-  const db = getFirestore();
+interface Props {
+  listing: Listing;
+  imageUrl: string;
+}
 
-  useEffect(() => {
-    if (listingId) {
-      const storageRef = ref(getStorage(), listingId);
-      getDownloadURL(storageRef).then((url) => {
-        setSrc(url);
-      });
-
-      const docRef = doc(db, "listings", listingId);
-      getDoc(docRef).then((docSnap) => {
-        setListingDocSnap(docSnap);
-      });
+const ListingPage: React.FC<Props> = ({ listing, imageUrl }) => {
+  function getConditionTagColor(condition: Condition) {
+    switch (condition) {
+      case "new":
+        return "#36BD64";
+      case "like new":
+        return "#11AE20";
+      case "very good":
+        return "#6EB811";
+      case "good":
+        return "#af70ee";
+      case "acceptable":
+        return "#955454";
     }
-  }, [listingId]);
+  }
 
   return (
     <>
       <div className="page-container">
-        {src && (
-          <div className="listing-image-container" style={{ display: isImageLoaded ? "block" : "none" }}>
-            <Zoom wrapStyle={{ width: "100%" }}>
-              <img src={src} alt="" onLoad={() => setIsImageLoaded(true)} className="listing-image" />
-            </Zoom>
-          </div>
-        )}
-
-        <div className="listing-content-container">
-          <div className="listing-tags">
-            <div className="year-level-tag"></div>
-            <div className="subject-tag"></div>
-            <div className="condition-tag"></div>
-          </div>
-          <h1 className="listing-name"></h1>
-          <h1 className="listing-price"></h1>
-          <p className="listing-description"></p>
-          <p>{listingId}</p>
+        <div className="listing-image-container">
+          <Zoom wrapStyle={{ width: "100%" }}>
+            <img src={imageUrl} alt="" className="listing-image" />
+          </Zoom>
         </div>
 
-        <div className="listing-actions-container"></div>
+        <section className="listing-information-container">
+          <div className="listing-content-container">
+            <div className="listing-tags">
+              <div className="year-level-tag tag">Y{listing.yearLevel}</div>
+              {listing.subject && <div className="subject-tag tag">{listing.subject}</div>}
+              <div
+                className="condition-tag tag"
+                style={{ background: getConditionTagColor(listing.condition) }}
+              >
+                {capitalise(listing.condition)}
+              </div>
+              <div className="type-tag tag">{capitalise(listing.type)}</div>
+            </div>
+            <h1 className="listing-name">{listing.name}</h1>
+            <h1 className="listing-price">${listing.price}</h1>
+            <p className="listing-description">{listing.description}</p>
+          </div>
+
+          <div className="listing-actions-container"></div>
+        </section>
       </div>
 
       <style jsx>{`
         .page-container {
           padding-top: 40px;
+        }
+
+        .listing-tags {
+          display: flex;
+        }
+
+        .tag {
+          margin-right: 10px;
+          padding: 3px 5px;
+          color: #fff;
+        }
+
+        .year-level-tag {
+          background: #b743ed;
+        }
+
+        .subject-tag {
+          background: #ed4343;
+        }
+
+        .type-tag {
+          background: #3f6ce1;
         }
 
         .listing-image-container {
@@ -66,6 +95,10 @@ const ListingPage: React.FC = () => {
           border-radius: 12px;
         }
 
+        .listing-content-container {
+          margin-top: 40px;
+        }
+
         .listing-image {
           width: 100%;
           height: 400px;
@@ -74,6 +107,41 @@ const ListingPage: React.FC = () => {
       `}</style>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const listingId = context.query.listingId as string;
+
+  const db = getFirestore();
+
+  const docRef = doc(db, "listings", listingId);
+
+  const docSnap = await getDoc(docRef);
+
+  const listing: Listing = {
+    id: docSnap.get("id"),
+    ownerId: docSnap.get("ownerId"),
+    buyerId: docSnap.get("buyerId"),
+    name: docSnap.get("name"),
+    description: docSnap.get("description"),
+    condition: docSnap.get("condition"),
+    state: docSnap.get("state"),
+    type: docSnap.get("type"),
+    yearLevel: docSnap.get("yearLevel"),
+    subject: docSnap.get("subject"),
+    price: docSnap.get("price"),
+    imagePath: docSnap.get("imagePath"),
+  };
+
+  const storageRef = ref(getStorage(), listingId);
+  const imageUrl = await getDownloadURL(storageRef);
+
+  return {
+    props: {
+      listing,
+      imageUrl,
+    },
+  };
 };
 
 export default ListingPage;

@@ -21,7 +21,7 @@ const AddListing: React.FC = () => {
 
   const { addListing } = useSubmitAddListingForm({
     listingType: listingType?.value,
-    yearLevel: yearLevel?.value,
+    yearLevel: parseInt(yearLevel?.value),
     subject: (subjects as Option)?.value,
     image,
     condition: condition?.value as Condition,
@@ -41,6 +41,8 @@ const AddListing: React.FC = () => {
         <h1 className="form-title">Add listing</h1>
 
         <PrimaryTextInput placeholder={"Listing name"} name={"name"} />
+
+        <PrimaryTextInput placeholder={"Listing price"} name={"price"} isNumeric />
 
         <p className="form-field-heading">Listing type</p>
         <Select

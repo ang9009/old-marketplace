@@ -10,7 +10,8 @@ export default interface Listing {
   condition: Condition;
   state: ListingState;
   type: string;
-  yearLevel: string;
+  yearLevel: number;
   subject?: string;
+  price: number;
   imagePath?: string;
 }

@@ -12,6 +12,7 @@ interface Props {
   width?: string;
   minWidth?: string;
   required?: boolean;
+  isNumeric?: boolean;
   inputType?: HTMLInputTypeAttribute;
   register?: any;
   boxShadow?: string;
@@ -28,6 +29,7 @@ const PrimaryTextInput: React.FC<Props> = ({
   padding = "17px 10px",
   margin = "0",
   borderRadius = "12px",
+  isNumeric = false,
   fontSize = "0.8rem",
   width = "100%",
   minWidth = "0",
@@ -48,6 +50,11 @@ const PrimaryTextInput: React.FC<Props> = ({
           id={name}
           placeholder={placeholder}
           required={required}
+          onChange={(e) => {
+            if (isNumeric) {
+              e.target.value = e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
+            }
+          }}
           {...(register && register(name))}
         />
         <p className="err-msg">{error?.message}</p>

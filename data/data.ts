@@ -14,31 +14,31 @@ export const yearLevelOptions: Option[] = [
 ];
 
 export const seniorSubjectOptions: Option[] = [
-  { label: "Math AI", value: "math ai" },
-  { label: "Math AA", value: "math aa" },
-  { label: "English L&L", value: "english l&l" },
-  { label: "English Lit", value: "english lit" },
-  { label: "Economics", value: "economics" },
-  { label: "Computer Science", value: "computer science" },
-  { label: "Geography", value: "geography" },
-  { label: "History", value: "history" },
-  { label: "Psychology", value: "psychology" },
-  { label: "Physics", value: "physics" },
-  { label: "Biology", value: "biology" },
-  { label: "Chemistry", value: "chemistry" },
-  { label: "Chinese A L&L", value: "chinese a l&l" },
-  { label: "Chinese A Lit", value: "chinese a lit" },
-  { label: "Chinese B", value: "chinese b" },
+  { label: "Math AI", value: "Math AI" },
+  { label: "Math AA", value: "Math AA" },
+  { label: "English L&L", value: "English L&L" },
+  { label: "English Lit", value: "English Lit" },
+  { label: "Economics", value: "Economics" },
+  { label: "Computer Science", value: "Computer Science" },
+  { label: "Geography", value: "Geography" },
+  { label: "History", value: "History" },
+  { label: "Psychology", value: "Psychology" },
+  { label: "Physics", value: "Physics" },
+  { label: "Biology", value: "Biology" },
+  { label: "Chemistry", value: "Chemistry" },
+  { label: "Chinese A L&L", value: "Chinese A L&L" },
+  { label: "Chinese A Lit", value: "Chinese A Lit" },
+  { label: "Chinese B", value: "Chinese B" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const nonSeniorSubjectOptions: Option[] = [
-  { label: "Chinese", value: "chinese" },
-  { label: "English", value: "english" },
-  { label: "Math", value: "math" },
+  { label: "Chinese", value: "Chinese" },
+  { label: "English", value: "English" },
+  { label: "Math", value: "Math" },
   { label: "InSo", value: "InSo" },
-  { label: "Science", value: "science" },
-  { label: "Spanish", value: "spanish" },
-  { label: "French", value: "french" },
+  { label: "Science", value: "Science" },
+  { label: "Spanish", value: "Spanish" },
+  { label: "French", value: "French" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const listingTypeOptions: Option[] = [
