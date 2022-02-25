@@ -34,7 +34,7 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
         .dropzone {
           width: 100%;
           height: 400px;
-          background: ${image?.file ? "#000" : "var(--secondaryBackgroundColor)"};
+          background: ${image?.file ? "black" : "var(--secondaryBackgroundColor)"};
           border: ${image?.file
             ? "1px solid var(--primaryBorderColor)"
             : "1px dashed var(--primaryBorderColor)"};
@@ -55,7 +55,7 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           inset: 0;
         }
 
-        .dropzone img {
+        .profile-picture {
           position: absolute;
           border: none;
           width: 100%;
@@ -64,6 +64,13 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           left: 50%;
           transform: translate(-50%, -50%);
           object-fit: contain;
+          z-index: 2;
+        }
+
+        .profile-picture-bg {
+          background: ${image?.file ? `url(${image.url}) no-repeat` : "var(--secondaryBackgroundColor)"};
+          background-size: cover;
+          width: 100%;
         }
 
         .dropzone p {

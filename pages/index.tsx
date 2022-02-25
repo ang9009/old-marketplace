@@ -5,6 +5,7 @@ import SignupContainer from "../components/ui/SignupContainer";
 import useGetUser from "../hooks/useGetUser";
 import useCompletedSignupRedirect from "../hooks/useCompletedSignupRedirect";
 import useSignIn from "../hooks/useSignIn";
+import { FcGoogle } from "react-icons/fc";
 
 const SignInPage: React.FC = () => {
   useCompletedSignupRedirect();
@@ -15,7 +16,10 @@ const SignInPage: React.FC = () => {
       <SignupContainer>
         <div className="content">
           <h1>CIS Marketplace</h1>
-          <button onClick={signIn}>Continue with Google</button>
+          <button onClick={signIn}>
+            <FcGoogle />
+            <span>Continue with Google</span>
+          </button>
         </div>
         <ToastContainer />
       </SignupContainer>
@@ -23,13 +27,22 @@ const SignInPage: React.FC = () => {
       <style jsx>{`
         button {
           margin-top: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           padding: 15px;
-          border: 2px solid var(--primaryBorderColor);
+          border: 1px solid var(--primaryBorderColor);
           background: var(--primaryBackgroundColor);
+          font-weight: 700;
           border-radius: 5px;
           cursor: pointer;
           transition: all 0.2s;
           width: 100%;
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+        }
+
+        button span {
+          margin-left: 10px;
         }
 
         button:hover {

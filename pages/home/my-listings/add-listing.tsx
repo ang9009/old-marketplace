@@ -3,16 +3,19 @@ import Select from "react-select";
 
 import { reactSelectStyles } from "../../../data/reactSelectStyles";
 import PrimaryTextInput from "../../../components/widgets/PrimaryTextInput";
-import { listingTypeOptions, Option, yearLevelOptions } from "../../../data/data";
+import { conditionOptions, listingTypeOptions, Option, yearLevelOptions } from "../../../data/data";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import ImageDropzone from "../../../components/widgets/ImageDropzone";
 import useUpdateSubjectOptions from "../../../hooks/useUpdateSubjectOptions";
 import LargeTextInput from "../../../components/widgets/PrimaryTextArea";
 import useSubmitAddListingForm from "../../../hooks/useSubmitAddListingForm";
+import Condition from "../../../types/condition.enum";
+import capitalise from "../../../utils/capitalise";
 
 const AddListing: React.FC = () => {
   const [listingType, setListingType] = useState<Option>(null);
   const [image, setImage] = useState<{ url: string; file: File }>(null);
+  const [condition, setCondition] = useState<Option>(null);
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions();
 
@@ -21,7 +24,16 @@ const AddListing: React.FC = () => {
     yearLevel: yearLevel?.value,
     subject: (subjects as Option)?.value,
     image,
+    condition: condition?.value as Condition,
   });
+
+  const getConditionObject = () => {
+    const result: Option[] = [];
+    for (const [_, value] of Object.entries(Condition)) {
+      result.push({ label: capitalise(value), value });
+    }
+    return result;
+  };
 
   return (
     <>
@@ -44,6 +56,16 @@ const AddListing: React.FC = () => {
             }
           }}
           styles={reactSelectStyles}
+        />
+
+        <p className="form-field-heading">Listing condition</p>
+        <Select
+          options={getConditionObject()}
+          value={condition}
+          onChange={(e) => setCondition(e)}
+          placeholder={"Listing condition"}
+          styles={reactSelectStyles}
+          isSearchable={false}
         />
 
         <p className="form-field-heading">Year level</p>

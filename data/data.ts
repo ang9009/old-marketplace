@@ -47,3 +47,11 @@ export const listingTypeOptions: Option[] = [
   { label: "Subscription", value: "subscription" },
   { label: "Miscellaneous", value: "miscellaneous" },
 ];
+
+export const conditionOptions: Option[] = [
+  { label: "New", value: "new" },
+  { label: "Like new", value: "like new" },
+  { label: "Very good", value: "very good" },
+  { label: "Good", value: "good" },
+  { label: "Acceptable", value: "acceptable" },
+];

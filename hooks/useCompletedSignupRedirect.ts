@@ -4,7 +4,7 @@ import useGetUser from "./useGetUser";
 
 function useCompletedSignupRedirect() {
   const router = useRouter();
-  const userDocSnap = useGetUser();
+  const { userDocSnap } = useGetUser();
 
   useEffect(() => {
     if (userDocSnap) {
