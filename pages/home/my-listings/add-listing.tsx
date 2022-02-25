@@ -3,7 +3,7 @@ import Select from "react-select";
 
 import { reactSelectStyles } from "../../../data/reactSelectStyles";
 import PrimaryTextInput from "../../../components/widgets/PrimaryTextInput";
-import { conditionOptions, listingTypeOptions, Option, yearLevelOptions } from "../../../data/data";
+import { listingTypeOptions, Option, yearLevelOptions } from "../../../data/data";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import ImageDropzone from "../../../components/widgets/ImageDropzone";
 import useUpdateSubjectOptions from "../../../hooks/useUpdateSubjectOptions";
