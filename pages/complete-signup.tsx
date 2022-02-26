@@ -13,14 +13,15 @@ import useGetUser from "../hooks/useGetUser";
 import { yearLevelOptions } from "../data/data";
 import { reactSelectStyles } from "../data/reactSelectStyles";
 import { Option } from "../data/data";
+import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
 
 const CompleteSignupPage: React.FC = () => {
-  // useRedirectWhenLoggedOut();
+  useRedirectWhenLoggedOut();
 
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
-  const userDocSnap = useGetUser();
+  const { userDocSnap } = useGetUser();
   const { isLoading, submit } = useSubmitSignupForm({
     userDocSnap,
     yearLevel,
