@@ -63,7 +63,7 @@ const CompleteSignupPage: React.FC = () => {
             isDisabled={!yearLevel}
           />
 
-          <p className="form-field-heading">Profile picture</p>
+          <p className="form-field-heading">Profile picture (optional)</p>
           <ImageDropzone image={image} setImage={setImage} />
 
           <PrimaryButton text={"Submit"} disabled={isLoading} mt={"30px"} buttonType={"submit"} />

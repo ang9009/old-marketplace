@@ -19,7 +19,7 @@ const AddListing: React.FC = () => {
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions();
 
-  const { addListing } = useSubmitAddListingForm({
+  const { isLoading, addListing } = useSubmitAddListingForm({
     listingType: listingType?.value,
     yearLevel: parseInt(yearLevel?.value),
     subject: (subjects as Option)?.value,
@@ -104,7 +104,7 @@ const AddListing: React.FC = () => {
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />
 
-        <PrimaryButton text={"Submit"} mt={"30px"} buttonType={"submit"} />
+        <PrimaryButton text={"Submit"} mt={"30px"} buttonType={"submit"} disabled={isLoading} />
       </form>
 
       <style jsx>{`
