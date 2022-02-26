@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
 
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";
@@ -19,7 +19,8 @@ const CompleteSignupPage: React.FC = () => {
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
-  const { userDocSnap } = useGetUser();
+  const [displayName, setDisplayName] = useState(null);
+  const { authUser, userDocSnap } = useGetUser();
   const { isLoading, submit } = useSubmitSignupForm({
     userDocSnap,
     yearLevel,
@@ -27,11 +28,17 @@ const CompleteSignupPage: React.FC = () => {
     image,
   });
 
+  useEffect(() => {
+    if (authUser) {
+      setDisplayName(authUser.displayName);
+    }
+  }, [authUser]);
+
   return (
     <>
       <SignupContainer>
         <form className="signup-form-content" onSubmit={submit}>
-          <h1 className="form-title">Complete your sign up</h1>
+          <h1 className="form-title">Welcome {displayName}, please complete your sign up</h1>
 
           <PrimaryTextInput name={"phoneNumber"} placeholder={"Phone number"} />
 

@@ -1,69 +1,65 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Zoom from "react-medium-image-zoom";
+import { BiLinkExternal } from "react-icons/bi";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import Listing from "../../../types/listing.interface";
-import { BiLinkExternal } from "react-icons/bi";
 
+import ListingState from "../../../types/listingState.enum";
 import capitalise from "../../../utils/capitalise";
-import Condition from "../../../types/condition.enum";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import useGetUser from "../../../hooks/useGetUser";
+import getConditionTagColor from "../../../utils/getConditionTagColor";
+import User from "../../../types/user.interface";
 
 interface Props {
   listing: Listing;
   listingImageUrl: string;
-  sellerName: string;
+  seller: User;
   sellerProfilePictureUrl: string;
 }
 
-const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, sellerName, sellerProfilePictureUrl }) => {
+const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const db = getFirestore();
-  const [isReserved, setIsReserved] = useState(null);
+
+  const [listingCache, setListingCache] = useState<Listing>(listing);
+
   const { authUser } = useGetUser();
 
-  useEffect(() => {
-    if (listing) {
-      if (listing.state === "available") {
-        setIsReserved(false);
-      } else {
-        setIsReserved(true);
-      }
-    }
-  }, [listing]);
-
   const updateListingState = async () => {
-    setIsReserved(!isReserved);
+    //May be redundant because of redirect when logged out hook
+    if (!authUser) return;
     const listingRef = doc(db, "listings", listing.id);
 
-    if (!isReserved) {
+    if (listingCache.state === "available") {
       await updateDoc(listingRef, {
-        state: "reserved",
+        state: ListingState.RESERVED,
         buyerId: authUser.uid,
       });
-    } else {
-      await updateDoc(listingRef, {
-        state: "available",
-        buyerId: null,
-      });
+
+      setListingCache((prev) => ({
+        ...prev,
+        state: ListingState.RESERVED,
+        buyerId: authUser.uid,
+      }));
+    } else if (listingCache.state === "reserved") {
+      if (listingCache.buyerId === authUser.uid) {
+        await updateDoc(listingRef, {
+          state: ListingState.AVAILABLE,
+          buyerId: null,
+        });
+
+        setListingCache((prev) => ({
+          ...prev,
+          state: ListingState.AVAILABLE,
+          buyerId: null,
+        }));
+      } else {
+        return;
+      }
     }
   };
-
-  function getConditionTagColor(condition: Condition) {
-    switch (condition) {
-      case "new":
-        return "#36BD64";
-      case "like new":
-        return "#11AE20";
-      case "very good":
-        return "#6EB811";
-      case "good":
-        return "#af70ee";
-      case "acceptable":
-        return "#955454";
-    }
-  }
 
   return (
     <>
@@ -77,37 +73,52 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, sellerName, se
         <section className="listing-information-container">
           <div className="listing-content-container">
             <div className="listing-tags">
-              <div className="year-level-tag tag">Y{listing.yearLevel}</div>
-              {listing.subject && <div className="subject-tag tag">{listing.subject}</div>}
-              <div className="type-tag tag">{capitalise(listing.type)}</div>
+              <div className="year-level-tag tag">Y{listingCache.yearLevel}</div>
+              {listingCache.subject && <div className="subject-tag tag">{listingCache.subject}</div>}
+              <div className="type-tag tag">{capitalise(listingCache.type)}</div>
               <div
                 className="condition-tag tag"
                 style={{ background: getConditionTagColor(listing.condition) }}
               >
-                {capitalise(listing.condition)}
+                {capitalise(listingCache.condition)}
               </div>
             </div>
-            <p className="listing-name">{listing.name}</p>
-            <h1 className="listing-price">${listing.price}</h1>
-            <div className="divider"></div>
+            <p className="listing-name">{listingCache.name}</p>
+            <h1 className="listing-price">${listingCache.price}</h1>
+            <div className="divider" />
             <h1>Description</h1>
-            <p className="listing-description">{listing.description}</p>
+            <p className="listing-description">{listingCache.description}</p>
           </div>
 
           <div className="listing-actions-container">
             <h1>Meet the seller</h1>
             <div className="seller-info-container">
               <img src={sellerProfilePictureUrl} alt="" className="seller-profile-picture" />
-              <h1 className="seller-name">{sellerName}</h1>
+              <h1 className="seller-name">{seller.name}</h1>
               <a href="" className="seller-profile-link">
-                <BiLinkExternal size={12} />
+                <BiLinkExternal size={15} />
               </a>
             </div>
             <PrimaryButton
-              text={isReserved ? "Unreserve listing" : "Reserve listing"}
+              text={
+                listingCache.state !== "available"
+                  ? authUser && listingCache.buyerId === authUser.uid
+                    ? "Cancel reservation"
+                    : "Unavailable"
+                  : "Reserve listing"
+              }
               width={"100%"}
               onClick={updateListingState}
-              background={isReserved ? "var(--secondaryButtonColor)" : "var(--primaryButtonColor)"}
+              disabled={
+                listingCache.state === ListingState.RESERVED &&
+                authUser &&
+                listingCache.buyerId !== authUser.uid
+              }
+              background={
+                listingCache.state !== "available"
+                  ? "var(--secondaryButtonColor)"
+                  : "var(--primaryButtonColor)"
+              }
             />
           </div>
         </section>
@@ -126,12 +137,16 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, sellerName, se
         }
 
         .listing-description {
-          margin-top: 10px;
+          margin-top: 5px;
           color: #646464;
         }
 
         .listing-tags {
           display: flex;
+        }
+
+        .listing-price {
+          margin-top: 5px;
         }
 
         .tag {
@@ -180,10 +195,6 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, sellerName, se
           margin-top: 15px;
         }
 
-        .listing-price {
-          font-size: 30px;
-        }
-
         .listing-actions-container {
           width: 30%;
           height: max-content;
@@ -228,44 +239,27 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, sellerName, se
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const listingId = context.query.listingId as string;
   const db = getFirestore();
+
   const listingDocRef = doc(db, "listings", listingId);
   const listingDocSnap = await getDoc(listingDocRef);
-
-  const listing: Listing = {
-    id: listingDocSnap.get("id"),
-    ownerId: listingDocSnap.get("ownerId"),
-    buyerId: listingDocSnap.get("buyerId"),
-    name: listingDocSnap.get("name"),
-    description: listingDocSnap.get("description"),
-    condition: listingDocSnap.get("condition"),
-    state: listingDocSnap.get("state"),
-    type: listingDocSnap.get("type"),
-    yearLevel: listingDocSnap.get("yearLevel"),
-    subject: listingDocSnap.get("subject"),
-    price: listingDocSnap.get("price"),
-  };
 
   const listingImageStorageRef = ref(getStorage(), listingId);
   const listingImageUrl = await getDownloadURL(listingImageStorageRef);
 
-  const sellerDocRef = doc(db, "users", listing.ownerId);
+  const sellerDocRef = doc(db, "users", listingDocSnap.get("ownerId"));
   const sellerDocSnap = await getDoc(sellerDocRef);
-  const sellerName = sellerDocSnap.get("name");
-  const sellerProfileImagePath = sellerDocSnap.get("profileImagePath");
-  let sellerProfilePictureUrl = null;
 
-  if (sellerProfileImagePath) {
-    const sellerProfilePictureStorageRef = ref(getStorage(), listing.ownerId);
-    sellerProfilePictureUrl = getDownloadURL(sellerProfilePictureStorageRef);
-  } else {
-    sellerProfilePictureUrl = "/blank.png";
-  }
+  const sellerProfileImagePath = sellerDocSnap.get("profileImagePath");
+
+  const sellerProfilePictureUrl = sellerProfileImagePath
+    ? await getDownloadURL(ref(getStorage(), listingDocSnap.get("ownerId")))
+    : "/blank.png";
 
   return {
     props: {
-      listing,
+      listing: listingDocSnap.data(),
       listingImageUrl,
-      sellerName,
+      seller: sellerDocSnap.data(),
       sellerProfilePictureUrl,
     },
   };
