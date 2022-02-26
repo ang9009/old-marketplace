@@ -1,6 +1,4 @@
-import React, { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import { ToastContainer } from "react-toastify";
+import React, { useState } from "react";
 import Select, { MultiValue } from "react-select";
 
 import PrimaryTextInput from "../components/widgets/PrimaryTextInput";

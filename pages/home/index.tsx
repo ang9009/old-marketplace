@@ -1,6 +1,5 @@
 import React from "react";
 
-import Navbar from "../../components/ui/Navbar";
 import Searchbar from "../../components/widgets/Searchbar";
 import Hero from "../../components/ui/Hero";
 import RecommendedListings from "../../components/ui/RecommendedListings";

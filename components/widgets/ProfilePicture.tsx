@@ -3,8 +3,7 @@ import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
-import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
-import Link from "next/link";
+import { Menu, MenuItem } from "@szhsin/react-menu";
 
 interface Props {
   size: string;
