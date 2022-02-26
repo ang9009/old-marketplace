@@ -5,6 +5,7 @@ interface Props {
   onClick?: (...any: any) => any;
   buttonType?: "submit" | "reset" | "button";
   disabled?: boolean;
+  width?: string;
   mt?: string;
   mb?: string;
   ml?: string;
@@ -18,6 +19,7 @@ const PrimaryButton: React.FC<Props> = ({
   text,
   onClick,
   disabled = false,
+  width = "max-content",
   mt,
   mb,
   ml,
@@ -45,6 +47,7 @@ const PrimaryButton: React.FC<Props> = ({
           cursor: pointer;
           background: ${background};
           color: #fff;
+          width: ${width};
         }
       `}</style>
     </>

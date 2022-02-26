@@ -13,5 +13,4 @@ export default interface Listing {
   yearLevel: number;
   subject?: string;
   price: number;
-  imagePath?: string;
 }

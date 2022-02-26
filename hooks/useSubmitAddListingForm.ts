@@ -66,7 +66,6 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
         state: ListingState.AVAILABLE,
         condition: condition,
         price: listingPrice,
-        imagePath: snapshot?.metadata?.fullPath,
       };
 
       await setDoc(doc(db, "listings", listingId), newListing);
