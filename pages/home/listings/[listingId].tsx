@@ -225,6 +225,8 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
 
         .seller-profile-picture {
           width: 30px;
+          height: 30px;
+          object-fit: cover;
           border-radius: 50%;
         }
 
