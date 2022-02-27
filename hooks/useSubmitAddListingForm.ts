@@ -3,6 +3,7 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
+import * as yup from "yup";
 
 import Listing from "../types/listing.interface";
 import { useRouter } from "next/router";
@@ -18,7 +19,18 @@ interface Props {
   condition: Condition;
 }
 
-function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condition }: Props) {
+const inputSchema = yup.object().shape({
+  type: yup.string().required(),
+  yearLevel: yup.number().integer().positive(),
+  subject: yup.string(),
+  image: yup.object().required(),
+  condition: yup.mixed<Condition>().oneOf(Object.values(Condition)).required(),
+  name: yup.string().required(),
+  price: yup.number().positive(),
+  description: yup.string().required(),
+});
+
+function useSubmitAddListingForm(props: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
@@ -32,15 +44,14 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
     const listingPrice = parseInt(e.target.price.value);
     const listingDescription = e.target.description.value;
 
-    if (
-      !listingName ||
-      !listingDescription ||
-      !listingType ||
-      !yearLevel ||
-      !image ||
-      !listingPrice ||
-      (!subject && listingType !== "miscellaneous")
-    ) {
+    const isValid = await inputSchema.isValid({
+      ...props,
+      type: props.listingType,
+      price: listingPrice,
+      description: listingDescription,
+    });
+
+    if (!isValid) {
       toast.error("One or more fields are empty!", {
         autoClose: 3000,
       });
@@ -50,9 +61,11 @@ function useSubmitAddListingForm({ listingType, yearLevel, subject, image, condi
     setIsLoading(true);
 
     try {
+      const { listingType, yearLevel, subject, image, condition } = props;
+
       const listingId = uuid();
 
-      const snapshot = await uploadBytes(ref(getStorage(), listingId), image.file);
+      await uploadBytes(ref(getStorage(), listingId), image.file);
 
       const newListing: Listing = {
         id: listingId,

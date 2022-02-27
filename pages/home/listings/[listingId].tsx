@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import { BiLinkExternal } from "react-icons/bi";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { GetServerSideProps } from "next";
-import Listing from "../../../types/listing.interface";
 
+import Listing from "../../../types/listing.interface";
 import ListingState from "../../../types/listingState.enum";
 import capitalise from "../../../utils/capitalise";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import useGetUser from "../../../hooks/useGetUser";
 import getConditionTagColor from "../../../utils/getConditionTagColor";
 import User from "../../../types/user.interface";
+import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
+import useUpdateListingState from "../../../hooks/useUpdateListingState";
 
 interface Props {
   listing: Listing;
@@ -21,45 +21,14 @@ interface Props {
 }
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
-  const db = getFirestore();
-
   const [listingCache, setListingCache] = useState<Listing>(listing);
-
   const { authUser } = useGetUser();
 
-  const updateListingState = async () => {
-    //May be redundant because of redirect when logged out hook
-    if (!authUser) return;
-    const listingRef = doc(db, "listings", listing.id);
-
-    if (listingCache.state === "available") {
-      await updateDoc(listingRef, {
-        state: ListingState.RESERVED,
-        buyerId: authUser.uid,
-      });
-
-      setListingCache((prev) => ({
-        ...prev,
-        state: ListingState.RESERVED,
-        buyerId: authUser.uid,
-      }));
-    } else if (listingCache.state === "reserved") {
-      if (listingCache.buyerId === authUser.uid) {
-        await updateDoc(listingRef, {
-          state: ListingState.AVAILABLE,
-          buyerId: null,
-        });
-
-        setListingCache((prev) => ({
-          ...prev,
-          state: ListingState.AVAILABLE,
-          buyerId: null,
-        }));
-      } else {
-        return;
-      }
-    }
-  };
+  const { updateListingState, isLoading } = useUpdateListingState({
+    listingCache,
+    setListingCache,
+    authUser,
+  });
 
   return (
     <>
@@ -110,9 +79,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
               width={"100%"}
               onClick={updateListingState}
               disabled={
-                listingCache.state === ListingState.RESERVED &&
-                authUser &&
-                listingCache.buyerId !== authUser.uid
+                (listingCache.state === ListingState.RESERVED &&
+                  authUser &&
+                  listingCache.buyerId !== authUser.uid) ||
+                isLoading
               }
               background={
                 listingCache.state !== "available"
@@ -239,29 +209,17 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const listingId = context.query.listingId as string;
-  const db = getFirestore();
+  const listingId = context.query.listingId;
 
-  const listingDocRef = doc(db, "listings", listingId);
-  const listingDocSnap = await getDoc(listingDocRef);
-
-  const listingImageStorageRef = ref(getStorage(), listingId);
-  const listingImageUrl = await getDownloadURL(listingImageStorageRef);
-
-  const sellerDocRef = doc(db, "users", listingDocSnap.get("ownerId"));
-  const sellerDocSnap = await getDoc(sellerDocRef);
-
-  const sellerProfileImagePath = sellerDocSnap.get("profileImagePath");
-
-  const sellerProfilePictureUrl = sellerProfileImagePath
-    ? await getDownloadURL(ref(getStorage(), listingDocSnap.get("ownerId")))
-    : "/blank.png";
+  const { listing, listingImageUrl, seller, sellerProfilePictureUrl } = await getListingAndUserDocs(
+    listingId as string
+  );
 
   return {
     props: {
-      listing: listingDocSnap.data(),
+      listing,
       listingImageUrl,
-      seller: sellerDocSnap.data(),
+      seller,
       sellerProfilePictureUrl,
     },
   };
