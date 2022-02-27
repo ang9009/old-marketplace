@@ -3,7 +3,6 @@ import React from "react";
 const RecommendedListings: React.FC = () => {
   return (
     <>
-      <h1 className="heading">Recommended for you</h1>
       <section>
         <div className="listing-card">
           <img src="./cis.jpg" alt="Image not available" className="listing-image" />
@@ -36,10 +35,6 @@ const RecommendedListings: React.FC = () => {
 
         .tags-container {
           margin-bottom: 5px;
-        }
-
-        .heading {
-          margin: 35px 0;
         }
 
         section {

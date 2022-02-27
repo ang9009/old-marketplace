@@ -7,7 +7,7 @@ import Listing from "../../../types/listing.interface";
 import ListingState from "../../../types/listingState.enum";
 import capitalise from "../../../utils/capitalise";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
-import useGetUser from "../../../hooks/useGetUser";
+import useGetCurrUser from "../../../hooks/useGetCurrUser";
 import getConditionTagColor from "../../../utils/getConditionTagColor";
 import User from "../../../types/user.interface";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
@@ -22,7 +22,7 @@ interface Props {
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [listingCache, setListingCache] = useState<Listing>(listing);
-  const { authUser } = useGetUser();
+  const { authUser } = useGetCurrUser();
 
   const { updateListingState, isLoading } = useUpdateListingState({
     listingCache,
@@ -144,6 +144,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
           place-items: center;
           height: 400px;
           background: #000;
+          width: 100%;
           border-radius: 12px;
           border: 1px solid var(--primaryBorderColor);
           box-sizing: initial;
@@ -154,8 +155,8 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
         }
 
         .listing-image {
-          width: 100%;
           height: 400px;
+          width: 100%;
           object-fit: contain;
         }
 

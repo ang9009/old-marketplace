@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import useGetUser from "./useGetUser";
+import useGetCurrUser from "./useGetCurrUser";
 
 function useCompletedSignupRedirect() {
   const router = useRouter();
-  const { userDocSnap } = useGetUser();
+  const { userDocSnap } = useGetCurrUser();
 
   useEffect(() => {
     if (userDocSnap) {
       const redirect = async () => {
-        const hasCompletedSignup: boolean = userDocSnap.get("hasCompletedSignup");
+        const hasCompletedSignup: boolean = userDocSnap.hasCompletedSignup;
         if (hasCompletedSignup) {
           await router.push("/home");
         } else {

@@ -7,7 +7,7 @@ import * as yup from "yup";
 
 import Listing from "../types/listing.interface";
 import { useRouter } from "next/router";
-import useGetUser from "./useGetUser";
+import useGetCurrUser from "./useGetCurrUser";
 import ListingState from "../types/listingState.enum";
 import Condition from "../types/condition.enum";
 
@@ -35,7 +35,7 @@ function useSubmitAddListingForm(props: Props) {
 
   const router = useRouter();
   const db = getFirestore();
-  const { authUser } = useGetUser();
+  const { authUser } = useGetCurrUser();
 
   const addListing = async (e) => {
     e.preventDefault();

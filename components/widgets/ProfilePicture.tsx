@@ -4,6 +4,7 @@ import { doc, DocumentSnapshot, getDoc, getFirestore } from "firebase/firestore"
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { Menu, MenuItem } from "@szhsin/react-menu";
+import useGetCurrUser from "../../hooks/useGetCurrUser";
 
 interface Props {
   size: string;
@@ -12,6 +13,7 @@ interface Props {
 const ProfilePicture: React.FC<Props> = ({ size }) => {
   const [src, setSrc] = useState<string | null>(null);
   const [docSnap, setDocSnap] = useState<DocumentSnapshot>(null);
+  const [userId, setUserId] = useState(null);
   const router = useRouter();
   const auth = getAuth();
   const db = getFirestore();
@@ -29,6 +31,7 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        setUserId(user.uid);
         const docRef = doc(db, "users", user.uid);
         getDoc(docRef).then((docSnap) => {
           setDocSnap(docSnap);
@@ -54,9 +57,8 @@ const ProfilePicture: React.FC<Props> = ({ size }) => {
   return (
     <>
       <Menu menuButton={<img src={src} alt={src} height={size} width={size} />} transition align={"end"}>
-        <MenuItem>Profile</MenuItem>
-        <MenuItem onClick={async () => router.push("/home/my-listings")}>My listings</MenuItem>
-        <MenuItem onClick={async () => router.push("/home/my-listings/add-listing")}>Add listing</MenuItem>
+        <MenuItem onClick={async () => router.push(`/home/profile/${userId}`)}>Profile</MenuItem>
+        <MenuItem onClick={async () => router.push("/home/profile/add-listing")}>Add listing</MenuItem>
         <MenuItem onClick={logOut}>
           <span className="sign-out-option">Sign out</span>
         </MenuItem>

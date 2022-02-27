@@ -10,6 +10,7 @@ const Index: React.FC = () => {
       <div className="page-container">
         <Searchbar />
         <Hero />
+        <h1 className="heading">Recommended for you</h1>
         <RecommendedListings />
       </div>
 
@@ -17,6 +18,12 @@ const Index: React.FC = () => {
         .page-container {
           margin: 0 auto;
           width: 80vw;
+        }
+
+        .heading {
+          margin: 35px 0;
+          width: 100%;
+          text-align: center;
         }
       `}</style>
     </>

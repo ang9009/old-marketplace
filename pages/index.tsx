@@ -2,7 +2,6 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 
 import SignupContainer from "../components/ui/SignupContainer";
-import useGetUser from "../hooks/useGetUser";
 import useCompletedSignupRedirect from "../hooks/useCompletedSignupRedirect";
 import useSignIn from "../hooks/useSignIn";
 import { FcGoogle } from "react-icons/fc";
