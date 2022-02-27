@@ -27,7 +27,8 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
       <div {...getRootProps()} className="dropzone">
         <input {...getInputProps()} />
         <p>Drag a file here or click to select a file</p>
-        {image?.url && <img src={image.url} alt={image.file.name} className="profile-picture" />}
+        {image?.url && <p className="preview-text">Drag another image here to replace</p>}
+        {image?.url && <img src={image.url} alt={image.file.name} className="image" />}
       </div>
 
       <style jsx>{`
@@ -48,6 +49,7 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
 
         .dropzone:hover {
           cursor: pointer;
+          background: ${image?.file || "#dddddd"};
         }
 
         .dropzone input {
@@ -55,7 +57,7 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           inset: 0;
         }
 
-        .profile-picture {
+        .image {
           position: absolute;
           border: none;
           width: 100%;
@@ -67,12 +69,6 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           z-index: 2;
         }
 
-        .profile-picture-bg {
-          background: ${image?.file ? `url(${image.url}) no-repeat` : "var(--secondaryBackgroundColor)"};
-          background-size: cover;
-          width: 100%;
-        }
-
         .dropzone p {
           position: absolute;
           top: 50%;
@@ -82,6 +78,22 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           font-size: 0.8rem;
           white-space: nowrap;
           color: #757575;
+        }
+
+        .preview-text {
+          position: absolute;
+          width: fit-content;
+          font-weight: 700;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
+          z-index: 3;
+          padding: 10px 20px;
+          border-radius: 12px;
+          background: var(--primaryBackgroundColor);
+          opacity: 0.5;
+          font-size: 15px !important;
         }
       `}</style>
     </>

@@ -40,7 +40,7 @@ const CompleteSignupPage: React.FC = () => {
         <form className="signup-form-content" onSubmit={submit}>
           <h1 className="form-title">Welcome {displayName}, please complete your sign up</h1>
 
-          <PrimaryTextInput name={"phoneNumber"} placeholder={"Phone number"} />
+          <PrimaryTextInput name={"phoneNumber"} placeholder={"Phone number (optional)"} required={false} />
 
           <p className="form-field-heading">Year level</p>
           <Select

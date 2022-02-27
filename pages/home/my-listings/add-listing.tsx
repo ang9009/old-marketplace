@@ -39,67 +39,78 @@ const AddListing: React.FC = () => {
     <>
       <form className="page-container" onSubmit={addListing}>
         <h1 className="form-title">Add listing</h1>
+        <div className="inputs-grid-container">
+          <div>
+            <PrimaryTextInput placeholder={"Listing name"} name={"name"} />
+          </div>
 
-        <PrimaryTextInput placeholder={"Listing name"} name={"name"} />
+          <PrimaryTextInput placeholder={"Listing price"} name={"price"} isNumeric />
 
-        <PrimaryTextInput placeholder={"Listing price"} name={"price"} isNumeric />
-
-        <p className="form-field-heading">Listing type</p>
-        <Select
-          options={listingTypeOptions}
-          placeholder={"Select listing type"}
-          isSearchable={false}
-          value={listingType}
-          onChange={(e) => {
-            setListingType(e);
-
-            if (e.value === "miscellaneous") {
-              setSubjects(null);
-            }
-          }}
-          styles={reactSelectStyles}
-        />
-
-        <p className="form-field-heading">Listing condition</p>
-        <Select
-          options={getConditionObject()}
-          value={condition}
-          onChange={(e) => setCondition(e)}
-          placeholder={"Listing condition"}
-          styles={reactSelectStyles}
-          isSearchable={false}
-        />
-
-        <p className="form-field-heading">Year level</p>
-        <Select
-          options={yearLevelOptions}
-          placeholder={"Year level"}
-          value={yearLevel}
-          isSearchable={false}
-          styles={reactSelectStyles}
-          onChange={(e) => {
-            setYearLevel((prev) => {
-              setPreviousYearLevel(prev);
-              return e;
-            });
-          }}
-        />
-
-        {(listingType && listingType.value === "miscellaneous") || (
-          <>
-            <p className="form-field-heading">Subject category</p>
+          <div>
+            <p className="form-field-heading">Listing type</p>
             <Select
-              options={subjectOptions}
-              placeholder={"Subject category"}
-              value={subjects}
-              styles={reactSelectStyles}
-              onChange={(e: Option) => setSubjects(e)}
-              isDisabled={!yearLevel}
-            />
-          </>
-        )}
+              options={listingTypeOptions}
+              placeholder={"Select listing type"}
+              isSearchable={false}
+              value={listingType}
+              onChange={(e) => {
+                setListingType(e);
 
-        <LargeTextInput placeholder={"Listing description"} name={"description"} height={300} />
+                if (e.value === "miscellaneous") {
+                  setSubjects(null);
+                }
+              }}
+              styles={reactSelectStyles}
+            />
+          </div>
+
+          <div>
+            <p className="form-field-heading">Listing condition</p>
+            <Select
+              options={getConditionObject()}
+              value={condition}
+              onChange={(e) => setCondition(e)}
+              placeholder={"Listing condition"}
+              styles={reactSelectStyles}
+              isSearchable={false}
+            />
+          </div>
+
+          <div>
+            <p className="form-field-heading">Year level</p>
+            <Select
+              options={yearLevelOptions}
+              placeholder={"Year level"}
+              value={yearLevel}
+              isSearchable={false}
+              styles={reactSelectStyles}
+              onChange={(e) => {
+                setYearLevel((prev) => {
+                  setPreviousYearLevel(prev);
+                  return e;
+                });
+              }}
+            />
+          </div>
+
+          <div>
+            {(listingType && listingType.value === "miscellaneous") || (
+              <>
+                <p className="form-field-heading">Subject category</p>
+                <Select
+                  options={subjectOptions}
+                  placeholder={"Subject category"}
+                  value={subjects}
+                  styles={reactSelectStyles}
+                  onChange={(e: Option) => setSubjects(e)}
+                  isDisabled={!yearLevel}
+                />
+              </>
+            )}
+          </div>
+        </div>
+
+        <LargeTextInput placeholder={"Listing description"} name={"description"} height={200} />
 
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />
@@ -110,6 +121,12 @@ const AddListing: React.FC = () => {
       <style jsx>{`
         .form-title {
           margin-top: 80px;
+        }
+
+        .inputs-grid-container {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-column-gap: 30px;
         }
       `}</style>
     </>
