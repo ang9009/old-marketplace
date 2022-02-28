@@ -29,5 +29,5 @@ export default function useGetCurrUser() {
     setIsLoading(false);
   }, []);
 
-  return { authUser, userDocSnap: userDocSnap?.data() as User, isLoading };
+  return { authUser, userData: userDocSnap?.data() as User, isLoading };
 }

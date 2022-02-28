@@ -22,7 +22,7 @@ const CompleteSignupPage: React.FC = () => {
   const [displayName, setDisplayName] = useState(null);
   const { authUser, userDocSnap } = useGetCurrUser();
   const { isLoading, submit } = useSubmitSignupForm({
-    userDocSnap,
+    userDocSnap: userData,
     yearLevel,
     subjects: subjects as MultiValue<Option>,
     image,
