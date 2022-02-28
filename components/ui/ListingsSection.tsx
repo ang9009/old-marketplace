@@ -1,11 +1,11 @@
 import React from "react";
 
-const RecommendedListings: React.FC = () => {
+const ListingsSection: React.FC = () => {
   return (
     <>
       <section>
         <div className="listing-card">
-          <img src="./cis.jpg" alt="Image not available" className="listing-image" />
+          <img src="/cis.jpg" alt="Image not available" className="listing-image" />
           <div className="listing-information">
             <div className="tags-container">
               <div className="tag">Y12</div>
@@ -106,4 +106,4 @@ const RecommendedListings: React.FC = () => {
   );
 };
 
-export default RecommendedListings;
+export default ListingsSection;

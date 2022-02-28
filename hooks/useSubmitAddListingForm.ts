@@ -24,7 +24,7 @@ const inputSchema = yup.object().shape({
   yearLevel: yup.number().integer().positive(),
   subject: yup.string(),
   image: yup.object().required(),
-  condition: yup.mixed<Condition>().oneOf(Object.values(Condition)).required(),
+  condition: yup.string().required(),
   name: yup.string().required(),
   price: yup.number().positive(),
   description: yup.string().required(),
@@ -49,7 +49,17 @@ function useSubmitAddListingForm(props: Props) {
       type: props.listingType,
       price: listingPrice,
       description: listingDescription,
+      name: listingName,
     });
+
+    console.log(
+      inputSchema.cast({
+        ...props,
+        type: props.listingType,
+        price: listingPrice,
+        description: listingDescription,
+      })
+    );
 
     if (!isValid) {
       toast.error("One or more fields are empty!", {

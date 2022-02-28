@@ -12,6 +12,7 @@ import { yearLevelOptions } from "../data/data";
 import { reactSelectStyles } from "../data/reactSelectStyles";
 import { Option } from "../data/data";
 import useRedirectWhenLoggedOut from "../hooks/useRedirectWhenLoggedOut";
+import User from "../types/user.interface";
 
 const CompleteSignupPage: React.FC = () => {
   useRedirectWhenLoggedOut();
@@ -20,9 +21,9 @@ const CompleteSignupPage: React.FC = () => {
     useUpdateSubjectOptions();
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const [displayName, setDisplayName] = useState(null);
-  const { authUser, userDocSnap } = useGetCurrUser();
+  const { authUser, userData } = useGetCurrUser();
   const { isLoading, submit } = useSubmitSignupForm({
-    userDocSnap: userData,
+    userDocSnap: userData as User,
     yearLevel,
     subjects: subjects as MultiValue<Option>,
     image,

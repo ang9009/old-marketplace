@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
-import RecommendedListings from "../../../components/ui/RecommendedListings";
+import ListingsSection from "../../../components/ui/ListingsSection";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import getUser from "../../../utils/getUser";
 import { GetServerSideProps } from "next";
@@ -20,6 +20,14 @@ const Index: React.FC<Props> = ({ userData, src }) => {
     await router.push("/home/profile/add-listing");
   };
 
+  // useEffect(() => {
+  //   const q = query(collection(db, "listings"), where("ownerId", "==", true));
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.id, " => ", doc.data());
+  //   });
+  // }, [authUser]);
+
   return (
     <>
       <div className="page-container">
@@ -30,11 +38,11 @@ const Index: React.FC<Props> = ({ userData, src }) => {
           </div>
           <div className="user-info">
             <h1 className="user-name">{userData.name}</h1>
-            <p>{userData.email}</p>
+            <p className="user-email">{userData.email}</p>
           </div>
         </section>
         <section className="profile-content">
-          <h1>User's Listings</h1>
+          <h1>{userData.name}'s Listings</h1>
           <div className="profile-actions-container">
             <div className="profile-navbar">
               <a href="">Available</a>
@@ -43,7 +51,7 @@ const Index: React.FC<Props> = ({ userData, src }) => {
             </div>
             <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
           </div>
-          <RecommendedListings />
+          <ListingsSection />
         </section>
       </div>
 
@@ -57,15 +65,10 @@ const Index: React.FC<Props> = ({ userData, src }) => {
           justify-content: space-between;
         }
 
-        .profile-navbar {
-        }
-
         .user-image-container {
           position: relative;
           height: 270px;
           border: 1px solid var(--primaryBorderColor);
-          background: ${src == "/blank.png" ? "#000" : `url(${src})`};
-          background-size: cover;
           box-sizing: initial;
           width: 100%;
           border-radius: 12px;
@@ -73,17 +76,13 @@ const Index: React.FC<Props> = ({ userData, src }) => {
           box-shadow: rgba(0, 0, 0, 0.1) 0 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
         }
 
-        .user-info {
-          width: 100%;
-          text-align: center;
-        }
-
         .blur {
-          border-radius: 12px;
           position: absolute;
+          background: ${src == "/blank.png" ? "#000" : `url(${src})`};
+          background-size: cover;
           width: 100%;
           height: 100%;
-          backdrop-filter: blur(10px);
+          filter: ${src == "/blank.png" || "brightness(0.5)"};
         }
 
         .profile-picture {
@@ -95,8 +94,20 @@ const Index: React.FC<Props> = ({ userData, src }) => {
           object-fit: cover;
         }
 
+        .user-info {
+          width: 100%;
+          text-align: center;
+          margin-top: 15px;
+        }
+
         .profile-content {
           margin-top: 40px;
+        }
+
+        .user-email {
+          color: #949494;
+          font-size: 15px;
+          margin-top: 3px;
         }
       `}</style>
     </>

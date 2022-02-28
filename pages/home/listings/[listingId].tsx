@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
+import { collection, query, where, getDocs, getFirestore } from "firebase/firestore";
 
 import Listing from "../../../types/listing.interface";
 import ListingState from "../../../types/listingState.enum";
@@ -22,6 +23,7 @@ interface Props {
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [listingCache, setListingCache] = useState<Listing>(listing);
+  const db = getFirestore();
   const { authUser } = useGetCurrUser();
 
   const { updateListingState, isLoading } = useUpdateListingState({
@@ -29,6 +31,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
     setListingCache,
     authUser,
   });
+
+  const goToSellerProfile = () => {
+    window.open(`/home/profile/${seller.id}`, "_blank");
+  };
 
   return (
     <>
@@ -64,7 +70,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
             <div className="seller-info-container">
               <img src={sellerProfilePictureUrl} alt="" className="seller-profile-picture" />
               <h1 className="seller-name">{seller.name}</h1>
-              <a href="" className="seller-profile-link">
+              <a className="seller-profile-link" target="_blank" onClick={goToSellerProfile}>
                 <BiLinkExternal size={15} />
               </a>
             </div>
@@ -203,6 +209,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
 
         .seller-profile-link {
           color: #a5a5a5;
+          cursor: pointer;
         }
       `}</style>
     </>

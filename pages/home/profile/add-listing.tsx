@@ -102,7 +102,9 @@ const AddListing: React.FC = () => {
                   placeholder={"Subject category"}
                   value={subjects}
                   styles={reactSelectStyles}
-                  onChange={(e: Option) => setSubjects(e)}
+                  onChange={(e: Option) => {
+                    setSubjects(e);
+                  }}
                   isDisabled={!yearLevel}
                 />
               </>

@@ -1,5 +1,5 @@
 import React from "react";
-import ProfilePicture from "../widgets/ProfilePicture";
+import NavbarUserWidget from "../widgets/NavbarUserWidget";
 import { GrCart } from "react-icons/gr";
 import useRedirectWhenLoggedOut from "../../hooks/useRedirectWhenLoggedOut";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
         </div>
         <div className="nav-right">
           <GrCart size={"25px"} style={{ marginRight: "30px", cursor: "pointer" }} />
-          <ProfilePicture size={"35px"} />
+          <NavbarUserWidget size={"35px"} />
         </div>
       </nav>
 

@@ -51,7 +51,7 @@ function useUpdateListingState({ listingCache, setListingCache, authUser }: Hook
             buyerId: null,
           });
         } else {
-          toast.error("Someone has already reserved this listing!", {
+          toast.error("This listing has already been reserved or has been marked as sold!", {
             autoClose: 3000,
           });
           setListingCache({
