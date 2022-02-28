@@ -114,7 +114,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
 
         .listing-description {
           margin-top: 5px;
-          color: #646464;
+          color: var(--secondaryTextColor);
         }
 
         .listing-tags {

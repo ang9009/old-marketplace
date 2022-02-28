@@ -37,17 +37,23 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
           </div>
         </section>
         <section className="profile-content">
-          <h1>{userData.name}'s Listings</h1>
+          <h1 className="listing-section-title">{userData.name}'s Listings</h1>
           <div className="profile-actions-container">
-            <div className="profile-navbar">
-              <a href="">Available</a>
-              <a href="">Reserved</a>
-              <a href="">Sold</a>
-            </div>
+            <ul className="profile-navbar">
+              <li>
+                <a href="">Available</a>
+              </li>
+              <li>
+                <a href="">Reserved</a>
+              </li>
+              <li>
+                <a href="">Sold</a>
+              </li>
+            </ul>
             <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
           </div>
+          <ListingsSection listings={userListings} />
         </section>
-        <ListingsSection listings={userListings} />
       </div>
 
       <style jsx>{`
@@ -55,9 +61,24 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
           padding-top: 80px;
         }
 
+        .profile-navbar {
+          margin-top: 20px;
+          display: flex;
+          list-style: none;
+        }
+
+        .profile-navbar li {
+          margin-right: 15px;
+        }
+
+        .listing-section-title {
+          font-size: 30px;
+        }
+
         .profile-actions-container {
           display: flex;
           justify-content: space-between;
+          align-items: center;
         }
 
         .user-image-container {
@@ -96,7 +117,7 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
         }
 
         .profile-content {
-          margin-top: 40px;
+          margin-top: 70px;
         }
 
         .user-email {

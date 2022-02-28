@@ -11,7 +11,6 @@ const Index: React.FC = () => {
         <Searchbar />
         <Hero />
         <h1 className="heading">Recommended for you</h1>
-        <ListingsSection />
       </div>
 
       <style jsx>{`
