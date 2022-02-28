@@ -1,24 +1,37 @@
 import React from "react";
+import Listing from "../../types/listing.interface";
+import { useRouter } from "next/router";
 
-const ListingsSection: React.FC = () => {
+interface Props {
+  listings: Listing[];
+}
+
+const ListingsSection: React.FC<Props> = ({ listings }) => {
+  const router = useRouter();
+
   return (
     <>
       <section>
-        <div className="listing-card">
-          <img src="/cis.jpg" alt="Image not available" className="listing-image" />
-          <div className="listing-information">
-            <div className="tags-container">
-              <div className="tag">Y12</div>
-              <div className="tag">Subject</div>
-              <div className="tag">Condition</div>
-            </div>
-            <div className="listing-information-text">
-              <h1 className="listing-name">Listing name</h1>
-              <h1 className="listing-price">$50</h1>
-            </div>
-            <p className="seller">Seller</p>
-          </div>
-        </div>
+        {listings &&
+          listings.map((listing) => {
+            return (
+              <div className="listing-card" onClick={async () => router.push(`/home/listings/${listing.id}`)}>
+                <img src="/cis.jpg" alt="Image not available" className="listing-image" />
+                <div className="listing-information">
+                  <div className="tags-container">
+                    <div className="tag">Y{listing.yearLevel}</div>
+                    <div className="tag">{listing.subject}</div>
+                    <div className="tag">{listing.condition}</div>
+                  </div>
+                  <div className="listing-information-text">
+                    <h1 className="listing-name">{listing.name}</h1>
+                    <h1 className="listing-price">${listing.price}</h1>
+                  </div>
+                  <p className="seller">Seller</p>
+                </div>
+              </div>
+            );
+          })}
       </section>
 
       <style jsx>{`

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import ListingsSection from "../../../components/ui/ListingsSection";
@@ -7,26 +8,20 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import getUser from "../../../utils/getUser";
 import { GetServerSideProps } from "next";
 import User from "../../../types/user.interface";
+import Listing from "../../../types/listing.interface";
 
 interface Props {
   userData: User;
+  userListings: Listing[] | null;
   src: string;
 }
 
-const Index: React.FC<Props> = ({ userData, src }) => {
+const Index: React.FC<Props> = ({ userData, userListings, src }) => {
   const router = useRouter();
 
   const goToAddListingsPage = async () => {
     await router.push("/home/profile/add-listing");
   };
-
-  // useEffect(() => {
-  //   const q = query(collection(db, "listings"), where("ownerId", "==", true));
-  //   const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.id, " => ", doc.data());
-  //   });
-  // }, [authUser]);
 
   return (
     <>
@@ -51,8 +46,8 @@ const Index: React.FC<Props> = ({ userData, src }) => {
             </div>
             <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
           </div>
-          <ListingsSection />
         </section>
+        <ListingsSection listings={userListings} />
       </div>
 
       <style jsx>{`
@@ -116,13 +111,21 @@ const Index: React.FC<Props> = ({ userData, src }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userId = context.query.userId;
+  const db = getFirestore();
 
   const { userData } = await getUser(userId as string);
 
   if (userData) {
     const profileImagePath = userData.profileImagePath;
 
-    console.log(profileImagePath);
+    let userListings: Listing[] = [];
+    const q = query(collection(db, "listings"), where("ownerId", "==", userData.id));
+    const listingQuerySnapshot = await getDocs(q);
+    if (listingQuerySnapshot) {
+      listingQuerySnapshot.forEach((doc) => {
+        userListings.push(doc.data() as Listing);
+      });
+    }
 
     if (profileImagePath) {
       const url = await getDownloadURL(ref(getStorage(), profileImagePath));
@@ -130,6 +133,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return {
         props: {
           userData,
+          userListings,
           src: url,
         },
       };
@@ -137,6 +141,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return {
         props: {
           userData,
+          userListings,
           src: "/blank.png",
         },
       };
