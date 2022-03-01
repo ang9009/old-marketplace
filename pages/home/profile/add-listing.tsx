@@ -13,11 +13,14 @@ import Condition from "../../../types/condition.enum";
 import capitalise from "../../../utils/capitalise";
 
 const AddListing: React.FC = () => {
+  const [name, setName] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [description, setDescription] = useState(null);
   const [listingType, setListingType] = useState<Option>(null);
   const [image, setImage] = useState<{ url: string; file: File }>(null);
   const [condition, setCondition] = useState<Option>(null);
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
-    useUpdateSubjectOptions();
+    useUpdateSubjectOptions(null, null);
 
   const { isLoading, addListing } = useSubmitAddListingForm({
     listingType: listingType?.value,
@@ -41,10 +44,21 @@ const AddListing: React.FC = () => {
         <h1 className="form-title">Add listing</h1>
         <div className="inputs-grid-container">
           <div>
-            <PrimaryTextInput placeholder={"Listing name"} name={"name"} />
+            <PrimaryTextInput
+              placeholder={"Listing name"}
+              name={"name"}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </div>
 
-          <PrimaryTextInput placeholder={"Listing price"} name={"price"} isNumeric />
+          <PrimaryTextInput
+            placeholder={"Listing price"}
+            name={"price"}
+            isNumeric
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
 
           <div>
             <p className="form-field-heading">Listing type</p>
@@ -112,7 +126,13 @@ const AddListing: React.FC = () => {
           </div>
         </div>
 
-        <LargeTextInput placeholder={"Listing description"} name={"description"} height={200} />
+        <LargeTextInput
+          placeholder={"Listing description"}
+          name={"description"}
+          height={200}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />

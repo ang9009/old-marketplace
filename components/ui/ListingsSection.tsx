@@ -91,7 +91,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
 
       <style jsx>{`
         .tag {
-          font-size: 10px;
+          font-size: 9px;
           display: inline;
           padding: 2px 5px;
           margin-right: 5px;

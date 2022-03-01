@@ -9,7 +9,6 @@ import PrimaryButton from "../../../../components/widgets/PrimaryButton";
 import ImageDropzone from "../../../../components/widgets/ImageDropzone";
 import useUpdateSubjectOptions from "../../../../hooks/useUpdateSubjectOptions";
 import PrimaryTextArea from "../../../../components/widgets/PrimaryTextArea";
-import useSubmitAddListingForm from "../../../../hooks/useSubmitAddListingForm";
 import capitalise from "../../../../utils/capitalise";
 import getListing from "../../../../utils/getListing";
 import { GetServerSideProps } from "next";
