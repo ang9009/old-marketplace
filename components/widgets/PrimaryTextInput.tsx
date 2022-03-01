@@ -16,6 +16,8 @@ interface Props {
   inputType?: HTMLInputTypeAttribute;
   register?: any;
   boxShadow?: string;
+  value?: any;
+  onChange?: (e) => any;
   error?: {
     message?: string;
   };
@@ -24,11 +26,13 @@ interface Props {
 const PrimaryTextInput: React.FC<Props> = ({
   placeholder,
   name,
+  value = "",
   backgroundColor = "var(--primaryBackgroundColor)",
   border = "1px solid var(--primaryBorderColor);",
   padding = "17px 10px",
   margin = "0",
   borderRadius = "12px",
+  onChange = () => {},
   isNumeric = false,
   fontSize = "0.8rem",
   width = "100%",
@@ -44,6 +48,7 @@ const PrimaryTextInput: React.FC<Props> = ({
       <div>
         <p className="form-field-heading">{placeholder}</p>
         <input
+          value={value}
           className={error?.message && "invalid"}
           type={inputType}
           name={name}
@@ -54,6 +59,8 @@ const PrimaryTextInput: React.FC<Props> = ({
             if (isNumeric) {
               e.target.value = e.target.value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
             }
+
+            onChange(e);
           }}
           {...(register && register(name))}
         />

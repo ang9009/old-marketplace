@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { MultiValue } from "react-select";
 import { nonSeniorSubjectOptions, seniorSubjectOptions, Option } from "../data/data";
 
-function useUpdateSubjectOptions() {
-  const [subjects, setSubjects] = useState<MultiValue<Option> | Option>(null);
+function useUpdateSubjectOptions(
+  subjectInitialState: MultiValue<Option> | Option,
+  yearLevelInitialState: Option
+) {
+  const [subjects, setSubjects] = useState<MultiValue<Option> | Option>(subjectInitialState);
   const [subjectOptions, setSubjectOptions] = useState<Option[]>(seniorSubjectOptions);
-  const [previousYearLevel, setPreviousYearLevel] = useState<Option>(null);
-  const [yearLevel, setYearLevel] = useState<Option>(null);
+  const [previousYearLevel, setPreviousYearLevel] = useState<Option>(yearLevelInitialState);
+  const [yearLevel, setYearLevel] = useState<Option>(yearLevelInitialState);
 
   //Updates subject options dropdown menu depending on year level, clears menu when current and previous year level are not both senior/secondary
   useEffect(() => {
@@ -21,7 +24,7 @@ function useUpdateSubjectOptions() {
         setSubjectOptions(seniorSubjectOptions);
       }
 
-      //Clear value field if the previous year level value  and the current year level value are not both senior/non-senior
+      //Clear value field if the previous year level value and the current year level value are not both senior/non-senior
       if (
         !(
           (yearLevelValue < 12 && previousYearLevelValue < 12) ||

@@ -33,7 +33,6 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
       });
 
       Promise.all(ownerNames).then((ownerNames) => {
-        console.log(ownerNames);
         setListingOwnerNames(ownerNames);
         setIsLoading(false);
       });
@@ -161,7 +160,6 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           word-wrap: break-word;
           overflow: hidden;
           text-overflow: ellipsis;
-          margin-right: 3px;
         }
 
         .listing-information-text {
@@ -180,6 +178,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
 
         .seller {
           color: var(--secondaryTextColor);
+          font-size: 15px;
         }
       `}</style>
     </>

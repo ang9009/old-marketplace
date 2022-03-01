@@ -4,12 +4,12 @@ import useGetCurrUser from "./useGetCurrUser";
 
 function useCompletedSignupRedirect() {
   const router = useRouter();
-  const { userDocSnap } = useGetCurrUser();
+  const { userData } = useGetCurrUser();
 
   useEffect(() => {
-    if (userDocSnap) {
+    if (userData) {
       const redirect = async () => {
-        const hasCompletedSignup: boolean = userDocSnap.hasCompletedSignup;
+        const hasCompletedSignup: boolean = userData.hasCompletedSignup;
         if (hasCompletedSignup) {
           await router.push("/home");
         } else {
@@ -19,7 +19,7 @@ function useCompletedSignupRedirect() {
 
       redirect();
     }
-  }, [userDocSnap]);
+  }, [userData]);
 }
 
 export default useCompletedSignupRedirect;

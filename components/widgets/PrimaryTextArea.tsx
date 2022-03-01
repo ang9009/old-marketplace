@@ -12,9 +12,11 @@ interface Props {
   ml?: string;
   mr?: string;
   margin?: string;
+  value?: string;
+  onChange?: (e) => any;
 }
 
-const PrimaryTextarea: React.FC<Props> = ({
+const PrimaryTextArea: React.FC<Props> = ({
   name,
   placeholder,
   height,
@@ -26,6 +28,8 @@ const PrimaryTextarea: React.FC<Props> = ({
   ml,
   mr,
   margin,
+  value = "",
+  onChange = (e) => {},
 }) => {
   return (
     <React.Fragment>
@@ -36,6 +40,10 @@ const PrimaryTextarea: React.FC<Props> = ({
         required={required}
         defaultValue={defaultValue}
         maxLength={maxLength}
+        value={value}
+        onChange={(e) => {
+          onChange(e);
+        }}
       />
 
       <style jsx>{`
@@ -68,4 +76,4 @@ const PrimaryTextarea: React.FC<Props> = ({
   );
 };
 
-export default PrimaryTextarea;
+export default PrimaryTextArea;

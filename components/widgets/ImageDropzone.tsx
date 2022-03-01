@@ -28,15 +28,15 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
         <input {...getInputProps()} />
         <p>Drag a file here or click to select a file</p>
         {image?.url && <p className="preview-text">Drag another image here to replace</p>}
-        {image?.url && <img src={image.url} alt={image.file.name} className="image" />}
+        {image?.url && <img src={image.url} alt={image.file?.name} className="image" />}
       </div>
 
       <style jsx>{`
         .dropzone {
           width: 100%;
           height: 400px;
-          background: ${image?.file ? "black" : "var(--secondaryBackgroundColor)"};
-          border: ${image?.file
+          background: ${image?.file || image.url ? "black" : "var(--secondaryBackgroundColor)"};
+          border: ${image?.file || image.url
             ? "1px solid var(--primaryBorderColor)"
             : "1px dashed var(--primaryBorderColor)"};
           border-spacing: 20px;
@@ -45,11 +45,6 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           border-radius: 12px;
           overflow: hidden;
           box-shadow: rgba(0, 0, 0, 0.1) 0 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-        }
-
-        .dropzone:hover {
-          cursor: pointer;
-          background: ${image?.file || "#dddddd"};
         }
 
         .dropzone input {

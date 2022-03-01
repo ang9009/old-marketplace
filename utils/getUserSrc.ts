@@ -1,11 +1,8 @@
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 import getUser from "./getUser";
 
-export default async function getUserData(userId: string) {
-  const db = getFirestore();
-
+export default async function getUserSrc(userId: string) {
   const { userData } = await getUser(userId as string);
 
   if (userData) {
@@ -13,16 +10,9 @@ export default async function getUserData(userId: string) {
 
     if (profileImagePath) {
       const url = await getDownloadURL(ref(getStorage(), profileImagePath));
-
-      return {
-        userData,
-        src: url,
-      };
+      return url;
     } else {
-      return {
-        userData,
-        src: "/blank.png",
-      };
+      return "/blank.png";
     }
   }
 }

@@ -10,8 +10,10 @@ interface Props {
   mb?: string;
   ml?: string;
   mr?: string;
+  color?: string;
   margin?: string;
   background?: string;
+  border?: string;
 }
 
 const PrimaryButton: React.FC<Props> = ({
@@ -19,7 +21,9 @@ const PrimaryButton: React.FC<Props> = ({
   text,
   onClick,
   disabled = false,
+  color = "#fff",
   width = "max-content",
+  border = "none",
   mt,
   mb,
   ml,
@@ -43,10 +47,10 @@ const PrimaryButton: React.FC<Props> = ({
           padding: 10px 35px;
           border-radius: 12px;
           font-weight: bold;
-          border: none;
+          border: ${border};
           cursor: pointer;
           background: ${background};
-          color: #fff;
+          color: ${color};
           width: ${width};
         }
       `}</style>

@@ -13,6 +13,7 @@ import getConditionTagColor from "../../../utils/getConditionTagColor";
 import User from "../../../types/user.interface";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
 import useUpdateListingState from "../../../hooks/useUpdateListingState";
+import { useRouter } from "next/router";
 
 interface Props {
   listing: Listing;
@@ -23,7 +24,7 @@ interface Props {
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [listingCache, setListingCache] = useState<Listing>(listing);
-  const db = getFirestore();
+  const router = useRouter();
   const { authUser } = useGetCurrUser();
 
   const { updateListingState, isLoading } = useUpdateListingState({
@@ -65,38 +66,54 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
             <p className="listing-description">{listingCache.description}</p>
           </div>
 
-          <div className="listing-actions-container">
-            <h1>Meet the seller</h1>
-            <div className="seller-info-container">
-              <img src={sellerProfilePictureUrl} alt="" className="seller-profile-picture" />
-              <h1 className="seller-name">{seller.name}</h1>
-              <a className="seller-profile-link" target="_blank" onClick={goToSellerProfile}>
-                <BiLinkExternal size={15} />
-              </a>
+          {authUser && authUser.uid === listingCache.ownerId ? (
+            <div className="listing-actions-container">
+              <h1>You own this listing!</h1>
+              <PrimaryButton
+                text={"Edit listing"}
+                width={"100%"}
+                mt={"15px"}
+                color={"#000"}
+                background={"none"}
+                onClick={async () => router.push(`/home/listings/edit-listing/${listing.id}`)}
+                border={"1px solid var(--primaryBorderColor)"}
+              />
+              <PrimaryButton text={"Mark as sold"} width={"100%"} mt={"15px"} />
             </div>
-            <PrimaryButton
-              text={
-                listingCache.state !== "available"
-                  ? authUser && listingCache.buyerId === authUser.uid
-                    ? "Cancel reservation"
-                    : "Unavailable"
-                  : "Reserve listing"
-              }
-              width={"100%"}
-              onClick={updateListingState}
-              disabled={
-                (listingCache.state === ListingState.RESERVED &&
-                  authUser &&
-                  listingCache.buyerId !== authUser.uid) ||
-                isLoading
-              }
-              background={
-                listingCache.state !== "available"
-                  ? "var(--secondaryButtonColor)"
-                  : "var(--primaryButtonColor)"
-              }
-            />
-          </div>
+          ) : (
+            <div className="listing-actions-container">
+              <h1>Meet the seller</h1>
+              <div className="seller-info-container">
+                <img src={sellerProfilePictureUrl} alt="" className="seller-profile-picture" />
+                <h1 className="seller-name">{seller.name}</h1>
+                <a className="seller-profile-link" target="_blank" onClick={goToSellerProfile}>
+                  <BiLinkExternal size={15} />
+                </a>
+              </div>
+              <PrimaryButton
+                text={
+                  listingCache.state !== "available"
+                    ? authUser && listingCache.buyerId === authUser.uid
+                      ? "Cancel reservation"
+                      : "Unavailable"
+                    : "Reserve listing"
+                }
+                width={"100%"}
+                onClick={updateListingState}
+                disabled={
+                  (listingCache.state === ListingState.RESERVED &&
+                    authUser &&
+                    listingCache.buyerId !== authUser.uid) ||
+                  isLoading
+                }
+                background={
+                  listingCache.state !== "available"
+                    ? "var(--secondaryButtonColor)"
+                    : "var(--primaryButtonColor)"
+                }
+              />
+            </div>
+          )}
         </section>
       </div>
 
