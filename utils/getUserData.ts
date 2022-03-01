@@ -2,7 +2,6 @@ import { collection, getDocs, getFirestore, query, where } from "firebase/firest
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 import getUser from "./getUser";
-import Listing from "../types/listing.interface";
 
 export default async function getUserData(userId: string) {
   const db = getFirestore();

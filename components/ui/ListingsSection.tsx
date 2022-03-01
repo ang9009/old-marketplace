@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Listing from "../../types/listing.interface";
 import { useRouter } from "next/router";
 import capitalise from "../../utils/capitalise";
-import { GetServerSideProps } from "next";
-import getUser from "../../utils/getUser";
 import getConditionTagColor from "../../utils/getConditionTagColor";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import Skeleton from "react-loading-skeleton";
+import getUser from "../../utils/getUser";
 
 interface Props {
   listings: Listing[];
@@ -12,20 +13,52 @@ interface Props {
 
 const ListingsSection: React.FC<Props> = ({ listings }) => {
   const router = useRouter();
+  const [listingImgUrls, setListingImgUrls] = useState(null);
+  const [listingOwnerNames, setListingOwnerNames] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const listingImgUrls = listings.map(async (listing) => {
+      return getDownloadURL(ref(getStorage(), listing.id));
+    });
+
+    Promise.all(listingImgUrls).then((urls) => {
+      setListingImgUrls(urls);
+
+      const ownerNames = listings.map(async (listing) => {
+        const { userData } = await getUser(listing.ownerId);
+        return userData.name;
+      });
+
+      Promise.all(ownerNames).then((ownerNames) => {
+        console.log(ownerNames);
+        setListingOwnerNames(ownerNames);
+        setIsLoading(false);
+      });
+    });
+  }, [listings]);
 
   return (
     <>
       <section>
-        {listings &&
-          listings.map((listing) => {
-            return (
-              <div
-                className="listing-card"
-                key={listing.id}
-                onClick={async () => router.push(`/home/listings/${listing.id}`)}
-              >
-                <img src="/cis.jpg" alt="Image not available" className="listing-image" />
-                <div className="listing-information">
+        {listings.map((listing, i) => {
+          return (
+            <div
+              className="listing-card"
+              key={listing.id}
+              onClick={async () => router.push(`/home/listings/${listing.id}`)}
+            >
+              {isLoading ? (
+                <Skeleton count={1} height={245} borderRadius={12} />
+              ) : (
+                <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
+              )}
+              <div className="listing-information">
+                {isLoading ? (
+                  <Skeleton count={1} height={17.5} borderRadius={0} />
+                ) : (
                   <div className="tags-container">
                     <div className="year-level-tag tag">Y{listing.yearLevel}</div>
                     {listing.subject && <div className="subject-tag tag">{listing.subject}</div>}
@@ -37,15 +70,24 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
                       {capitalise(listing.condition)}
                     </div>
                   </div>
+                )}
+                {isLoading ? (
+                  <Skeleton count={1} height={24} borderRadius={0} />
+                ) : (
                   <div className="listing-information-text">
                     <h1 className="listing-name">{listing.name}</h1>
                     <h1 className="listing-price">${listing.price}</h1>
                   </div>
-                  <p className="seller">Seller name</p>
-                </div>
+                )}
+                {isLoading ? (
+                  <Skeleton count={1} height={22} borderRadius={0} />
+                ) : (
+                  <p className="seller">{listingOwnerNames[i]}</p>
+                )}
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
       </section>
 
       <style jsx>{`
@@ -103,7 +145,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
 
         .listing-image {
           width: 100%;
-          height: 70%;
+          height: 245px;
           border-radius: 12px;
         }
 

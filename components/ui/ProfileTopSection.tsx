@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import User from "../../types/user.interface";
 import PrimaryButton from "../widgets/PrimaryButton";
+import Link from "next/link";
 
 interface Props {
   userData: User;
@@ -11,10 +12,22 @@ interface Props {
 
 const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
   const router = useRouter();
-  console.log(router.basePath);
+  const currentPage = router.asPath.split("/")[3];
 
   const goToAddListingsPage = async () => {
     await router.push("/home/profile/add-listing");
+  };
+
+  const goToReservedPage = async () => {
+    await router.push(`/home/profile/reserved/${userData.id}`);
+  };
+
+  const goToAvailablePage = async () => {
+    await router.push(`/home/profile/available/${userData.id}`);
+  };
+
+  const goToSoldPage = async () => {
+    await router.push(`/home/profile/sold/${userData.id}`);
   };
 
   return (
@@ -34,15 +47,19 @@ const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
         <div className="profile-actions-container">
           <ul className="profile-navbar">
             <li>
-              <a href="" className="navbar-available">
-                Available
-              </a>
+              <Link href={`/home/profile/available/${userData.id}`} scroll={false}>
+                <p className={currentPage === "available" && "navbar-active"}>Available</p>
+              </Link>
             </li>
             <li>
-              <a href="">Reserved</a>
+              <Link href={`/home/profile/reserved/${userData.id}`} scroll={false}>
+                <p className={currentPage === "reserved" && "navbar-active"}>Reserved</p>
+              </Link>
             </li>
             <li>
-              <a href="">Sold</a>
+              <Link href={`/home/profile/sold/${userData.id}`} scroll={false}>
+                <p className={currentPage === "sold" && "navbar-active"}>Sold</p>
+              </Link>
             </li>
           </ul>
           <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
@@ -57,17 +74,14 @@ const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
         }
 
         .profile-navbar li {
-          margin-right: 20px;
+          margin-right: 30px;
         }
 
-        .profile-navbar li a {
+        .profile-navbar li p {
           color: #000;
-          text-decoration: none;
           font-weight: bold;
-        }
-
-        .navbar-available {
-          color: ${router.basePath.split("/")[2] === "available" && "red"};
+          position: relative;
+          cursor: pointer;
         }
 
         .listing-section-title {
@@ -123,6 +137,20 @@ const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
           color: #949494;
           font-size: 15px;
           margin-top: 3px;
+        }
+
+        .navbar-active {
+          color: var(--primaryColor) !important;
+        }
+
+        .navbar-active::after {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          content: "";
+          width: 100%;
+          height: 2px;
+          background: var(--primaryColor);
         }
       `}</style>
     </>

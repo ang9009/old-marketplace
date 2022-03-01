@@ -34,7 +34,7 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const userId = context.query.userId as string;
   const { userData, src } = await getUserData(userId);
-  const userListings = await getUserListings(userId, "available");
+  const userListings = await getUserListings(userId, "reserved");
 
   return { props: { userData, userListings, src } };
 };

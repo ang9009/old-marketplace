@@ -13,6 +13,7 @@ import "../styles/variables.css";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
 import "react-medium-image-zoom/dist/styles.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
 import React from "react";
 
