@@ -7,6 +7,7 @@ import ListingsSection from "../../../../components/ui/ListingsSection";
 import getUser from "../../../../utils/getUser";
 import User from "../../../../types/user.interface";
 import getUserData from "../../../../utils/getUserData";
+import getUserListings from "../../../../utils/getUserListings";
 
 interface Props {
   userData: User;
@@ -32,8 +33,9 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const userId = context.query.userId;
-  const { userData, userListings, src } = await getUserData(userId as string);
+  const userId = context.query.userId as string;
+  const { userData, src } = await getUserData(userId);
+  const userListings = await getUserListings(userId, "available");
 
   return { props: { userData, userListings, src } };
 };

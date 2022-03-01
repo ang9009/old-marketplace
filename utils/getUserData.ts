@@ -12,31 +12,16 @@ export default async function getUserData(userId: string) {
   if (userData) {
     const profileImagePath = userData.profileImagePath;
 
-    let userListings: Listing[] = [];
-    const q = query(
-      collection(db, "listings"),
-      where("ownerId", "==", userId),
-      where("state", "==", "available")
-    );
-    const listingQuerySnapshot = await getDocs(q);
-    if (listingQuerySnapshot) {
-      listingQuerySnapshot.forEach((doc) => {
-        userListings.push(doc.data() as Listing);
-      });
-    }
-
     if (profileImagePath) {
       const url = await getDownloadURL(ref(getStorage(), profileImagePath));
 
       return {
         userData,
-        userListings,
         src: url,
       };
     } else {
       return {
         userData,
-        userListings,
         src: "/blank.png",
       };
     }
