@@ -112,8 +112,8 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
 
         .listing-name {
           white-space: nowrap;
-          overflow: hidden;
           word-wrap: break-word;
+          overflow: hidden;
           text-overflow: ellipsis;
           margin-right: 3px;
         }

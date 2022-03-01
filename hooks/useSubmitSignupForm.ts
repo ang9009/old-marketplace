@@ -48,11 +48,6 @@ function useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image }: Props)
       });
 
       if (isValid) {
-        console.log(parseInt(yearLevel.value));
-        console.log(subjects);
-        console.log(image);
-        console.log(e.target.phoneNumber.value);
-
         toast.error("One or more fields are empty!", {
           autoClose: 3000,
         });

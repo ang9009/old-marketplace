@@ -115,6 +115,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
         .listing-description {
           margin-top: 5px;
           color: var(--secondaryTextColor);
+          width: 100%;
+          word-break: break-all;
+          white-space: normal;
+          line-height: 30px;
         }
 
         .listing-tags {
@@ -170,6 +174,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
           font-size: 20px;
           font-weight: 500;
           margin-top: 15px;
+          width: 100%;
+          word-break: break-all;
+          white-space: normal;
+          line-height: 30px;
         }
 
         .listing-actions-container {
