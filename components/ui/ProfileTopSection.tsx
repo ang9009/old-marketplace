@@ -13,8 +13,6 @@ interface Props {
 const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
   const router = useRouter();
   const currentPage = router.asPath.split("/")[3];
-  console.log(userData);
-  console.log(userData.yearLevel);
 
   const goToAddListingsPage = async () => {
     await router.push("/home/profile/add-listing");

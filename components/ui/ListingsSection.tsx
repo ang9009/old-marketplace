@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Listing from "../../types/listing.interface";
 import { useRouter } from "next/router";
+
+import Listing from "../../types/listing.interface";
 import capitalise from "../../utils/capitalise";
 import getConditionTagColor from "../../utils/getConditionTagColor";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
@@ -18,8 +19,6 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
-
     const listingImgUrls = listings.map(async (listing) => {
       return getDownloadURL(ref(getStorage(), listing.id));
     });
@@ -146,6 +145,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           width: 100%;
           height: 245px;
           border-radius: 12px;
+          object-fit: cover;
         }
 
         .listing-information {
@@ -170,6 +170,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
 
         .listing-price {
           color: var(--secondaryTextColor);
+          text-overflow: ellipsis;
         }
 
         .heading {

@@ -9,11 +9,10 @@ export default function useGetCurrUser() {
   const auth = getAuth();
   const [userDocSnap, setUserDocSnap] = useState<DocumentSnapshot<DocumentData>>(null);
   const [authUser, setAuthUser] = useState<AuthUser>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
-      setIsLoading(true);
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
@@ -22,11 +21,10 @@ export default function useGetCurrUser() {
         setIsLoading(false);
       } else {
         console.log("Not logged in");
+        setIsLoading(false);
         return;
       }
     });
-
-    setIsLoading(false);
   }, []);
 
   return { authUser, userData: userDocSnap?.data() as User, isLoading };

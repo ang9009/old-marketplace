@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
-import { collection, query, where, getDocs, getFirestore } from "firebase/firestore";
+import Skeleton from "react-loading-skeleton";
 
 import Listing from "../../../types/listing.interface";
 import ListingState from "../../../types/listingState.enum";
@@ -25,7 +25,8 @@ interface Props {
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [listingCache, setListingCache] = useState<Listing>(listing);
   const router = useRouter();
-  const { authUser } = useGetCurrUser();
+
+  const { authUser, isLoading: isUserLoading } = useGetCurrUser();
 
   const { updateListingState, isLoading } = useUpdateListingState({
     listingCache,
@@ -66,7 +67,15 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
             <p className="listing-description">{listingCache.description}</p>
           </div>
 
-          {authUser && authUser.uid === listingCache.ownerId ? (
+          {isUserLoading ? (
+            <div className="listing-actions-container">
+              <div>
+                <Skeleton height={30} width={250} />
+                <Skeleton height={30} style={{ marginTop: "15px" }} />
+                <Skeleton height={30} style={{ marginTop: "15px" }} />
+              </div>
+            </div>
+          ) : authUser && authUser.uid === listingCache.ownerId ? (
             <div className="listing-actions-container">
               <h1>You own this listing!</h1>
               <PrimaryButton

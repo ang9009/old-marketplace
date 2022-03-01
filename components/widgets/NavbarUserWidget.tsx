@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
+
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import useGetCurrUser from "../../hooks/useGetCurrUser";
+import Skeleton from "react-loading-skeleton";
 
 interface Props {
   size: string;
@@ -11,6 +13,7 @@ interface Props {
 
 const NavbarUserWidget: React.FC<Props> = ({ size }) => {
   const [src, setSrc] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { userData } = useGetCurrUser();
   const router = useRouter();
   const auth = getAuth();
@@ -36,12 +39,19 @@ const NavbarUserWidget: React.FC<Props> = ({ size }) => {
       } else {
         setSrc("/blank.png");
       }
+
+      setIsLoading(false);
     }
   }, [userData]);
 
   return (
     <>
-      {userData && (
+      {isLoading ? (
+        <div className="skeleton-container">
+          <Skeleton count={1} height={35} width={35} circle={true} />
+          <Skeleton count={1} height={22} width={60} borderRadius={0} style={{ marginLeft: "10px" }} />
+        </div>
+      ) : (
         <Menu
           menuButton={
             <div className="component-container">
@@ -65,6 +75,12 @@ const NavbarUserWidget: React.FC<Props> = ({ size }) => {
       )}
 
       <style jsx>{`
+        .skeleton-container {
+          display: flex;
+          align-items: center;
+          width: min-content;
+        }
+
         .component-container {
           display: flex;
           align-items: center;

@@ -91,10 +91,10 @@ const AddListing: React.FC = () => {
           </div>
 
           <div>
-            <p className="form-field-heading">Year level</p>
+            <p className="form-field-heading">Intended year level</p>
             <Select
               options={yearLevelOptions}
-              placeholder={"Year level"}
+              placeholder={"Intended year level"}
               value={yearLevel}
               isSearchable={false}
               styles={reactSelectStyles}
