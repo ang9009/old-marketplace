@@ -37,7 +37,7 @@ const SignInPage: React.FC = () => {
           cursor: pointer;
           transition: all 0.2s;
           width: 100%;
-          box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+          box-shadow: var(--primaryBoxShadow);
         }
 
         button span {

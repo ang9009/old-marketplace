@@ -19,7 +19,11 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         {listings &&
           listings.map((listing) => {
             return (
-              <div className="listing-card" onClick={async () => router.push(`/home/listings/${listing.id}`)}>
+              <div
+                className="listing-card"
+                key={listing.id}
+                onClick={async () => router.push(`/home/listings/${listing.id}`)}
+              >
                 <img src="/cis.jpg" alt="Image not available" className="listing-image" />
                 <div className="listing-information">
                   <div className="tags-container">
@@ -93,8 +97,8 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         }
 
         .listing-card:hover {
-          box-shadow: 0 8px 8px rgba(95, 93, 93, 0.25);
-          transform: translateY(-1px);
+          box-shadow: var(--secondaryBoxShadow);
+          transform: translateY(-3px);
         }
 
         .listing-image {

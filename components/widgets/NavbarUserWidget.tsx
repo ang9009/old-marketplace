@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
-import { getFirestore } from "firebase/firestore";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { Menu, MenuItem } from "@szhsin/react-menu";
@@ -54,7 +53,9 @@ const NavbarUserWidget: React.FC<Props> = ({ size }) => {
           menuStyles={{ marginTop: "10px" }}
           align={"end"}
         >
-          <MenuItem onClick={async () => router.push(`/home/profile/${userData.id}`)}>Profile</MenuItem>
+          <MenuItem onClick={async () => router.push(`/home/profile/available/${userData.id}`)}>
+            Profile
+          </MenuItem>
           <MenuItem>User settings</MenuItem>
           <MenuItem onClick={async () => router.push("/home/profile/add-listing")}>Add listing</MenuItem>
           <MenuItem onClick={logOut}>
