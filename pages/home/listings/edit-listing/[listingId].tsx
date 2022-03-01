@@ -67,7 +67,7 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
     <>
       <form className="page-container" onSubmit={addListing}>
         <h1 className="form-title">Edit listing</h1>
-        <div className="inputs-grid-container">
+        <section className="inputs-grid-container">
           <div>
             <PrimaryTextInput
               placeholder={"Listing name"}
@@ -84,37 +84,17 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+        </section>
 
-          <div>
-            <p className="form-field-heading">Listing type</p>
-            <Select
-              options={listingTypeOptions}
-              placeholder={"Select listing type"}
-              isSearchable={false}
-              value={type}
-              onChange={(e) => {
-                setType(e);
+        <PrimaryTextArea
+          placeholder={"Listing description"}
+          name={"description"}
+          height={200}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-                if (e.value === "miscellaneous") {
-                  setSubjects(null);
-                }
-              }}
-              styles={reactSelectStyles}
-            />
-          </div>
-
-          <div>
-            <p className="form-field-heading">Listing condition</p>
-            <Select
-              options={getConditionObject()}
-              value={condition}
-              onChange={(e) => setCondition(e)}
-              placeholder={"Listing condition"}
-              styles={reactSelectStyles}
-              isSearchable={false}
-            />
-          </div>
-
+        <section className="inputs-grid-container">
           <div>
             <p className="form-field-heading">Intended year level</p>
             <Select
@@ -149,20 +129,43 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
               </>
             )}
           </div>
-        </div>
 
-        <PrimaryTextArea
-          placeholder={"Listing description"}
-          name={"description"}
-          height={200}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <div>
+            <p className="form-field-heading">Listing type</p>
+            <Select
+              options={listingTypeOptions}
+              placeholder={"Select listing type"}
+              isSearchable={false}
+              value={type}
+              onChange={(e) => {
+                setType(e);
+
+                if (e.value === "miscellaneous") {
+                  setSubjects(null);
+                }
+              }}
+              styles={reactSelectStyles}
+            />
+          </div>
+
+          <div>
+            <p className="form-field-heading">Listing condition</p>
+            <Select
+              options={getConditionObject()}
+              value={condition}
+              onChange={(e) => setCondition(e)}
+              placeholder={"Listing condition"}
+              styles={reactSelectStyles}
+              isSearchable={false}
+            />
+            <p>Like new: item is in relatively mint condition.</p>
+          </div>
+        </section>
 
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />
 
-        <PrimaryButton text={"Submit"} mt={"30px"} buttonType={"submit"} disabled={isLoading} />
+        <PrimaryButton text={"Submit changes"} mt={"30px"} buttonType={"submit"} disabled={isLoading} />
       </form>
 
       <style jsx>{`

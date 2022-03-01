@@ -51,7 +51,15 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
               {isLoading ? (
                 <Skeleton count={1} height={245} borderRadius={12} />
               ) : (
-                <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
+                <div className="image-container">
+                  {listing.state === "reserved" && (
+                    <div>
+                      <p className="reserved-text">RESERVED</p>
+                      <div className="reserved-overlay"></div>
+                    </div>
+                  )}
+                  <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
+                </div>
               )}
               <div className="listing-information">
                 {isLoading ? (
@@ -98,6 +106,48 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           color: #fff;
         }
 
+        .image-container {
+          position: relative;
+          width: 100%;
+          height: 245px;
+        }
+
+        .listing-image {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          border-radius: 12px;
+          object-fit: cover;
+        }
+
+        .reserved-overlay {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 12px;
+          top: 0;
+          left: 0;
+          z-index: 2;
+          opacity: 0.6;
+          background: black;
+        }
+
+        .reserved-text {
+          position: absolute;
+          z-index: 3;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-weight: bold;
+          font-size: 15px;
+          color: #fff;
+          background: #3f6ce0;
+          padding: 5px 10px;
+          border-radius: 8px;
+        }
+
         .year-level-tag {
           background: #ff8c00;
         }
@@ -139,13 +189,6 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         .listing-card:hover {
           box-shadow: var(--secondaryBoxShadow);
           transform: translateY(-3px);
-        }
-
-        .listing-image {
-          width: 100%;
-          height: 245px;
-          border-radius: 12px;
-          object-fit: cover;
         }
 
         .listing-information {
