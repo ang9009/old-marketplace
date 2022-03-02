@@ -38,7 +38,9 @@ const Index: React.FC<Props> = ({}) => {
             });
           }
         })
-      ).then(() => setListings(listings));
+      ).then(() => {
+        setListings(listings);
+      });
     }
   }, [userData]);
 

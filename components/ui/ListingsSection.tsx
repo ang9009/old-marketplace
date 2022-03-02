@@ -36,7 +36,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         setIsLoading(false);
       });
     });
-  }, [listings]);
+  }, []);
 
   return (
     <>
