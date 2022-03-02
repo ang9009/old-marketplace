@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Searchbar from "../../components/widgets/Searchbar";
 import Hero from "../../components/ui/Hero";
 import { GetServerSideProps } from "next";
 import useGetCurrUser from "../../hooks/useGetCurrUser";
 import Listing from "../../types/listing.interface";
-import { getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import ListingsSection from "../../components/ui/ListingsSection";
 
 interface Props {
   recommendedListings: Listing[];
@@ -16,7 +17,30 @@ const Index: React.FC<Props> = ({}) => {
   const { userData } = useGetCurrUser();
   const [listings, setListings] = useState(null);
 
-  let recommendedListings: Listing[] = [];
+  useEffect(() => {
+    if (userData) {
+      const listings: Listing[] = [];
+      Promise.all(
+        userData.subjects.map(async (subject) => {
+          const q = query(
+            collection(db, "listings"),
+            where("yearLevel", "==", parseInt(userData.yearLevel)),
+            where("subject", "==", subject),
+            where("ownerId", "!=", userData.id),
+            where("state", "==", "available")
+          );
+
+          const listingQuerySnapshot = await getDocs(q);
+
+          if (listingQuerySnapshot) {
+            listingQuerySnapshot.forEach((doc) => {
+              listings.push(doc.data() as Listing);
+            });
+          }
+        })
+      ).then(() => setListings(listings));
+    }
+  }, [userData]);
 
   return (
     <>
@@ -24,7 +48,7 @@ const Index: React.FC<Props> = ({}) => {
         <Searchbar />
         <Hero />
         <h1 className="heading">Recommended for you</h1>
-        {/*<ListingsSection listings={listings} />*/}
+        {listings && <ListingsSection listings={listings} />}
       </div>
 
       <style jsx>{`

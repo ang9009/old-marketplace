@@ -146,8 +146,8 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           transform: translate(-50%, -50%);
           font-weight: bold;
           font-size: 15px;
-          color: #fff;
-          background: #3f6ce0;
+          color: #000;
+          background: #fff;
           padding: 5px 10px;
           border-radius: 8px;
         }

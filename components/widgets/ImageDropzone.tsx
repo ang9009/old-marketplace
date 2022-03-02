@@ -61,7 +61,6 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
           left: 50%;
           transform: translate(-50%, -50%);
           object-fit: contain;
-          z-index: 2;
         }
 
         .dropzone p {
