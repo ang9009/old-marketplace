@@ -8,18 +8,18 @@ const Navbar: React.FC = () => {
   useRedirectWhenLoggedOut();
   const router = useRouter();
 
-  const redirectToHome = async () => {
-    await router.push("/home");
-  };
-
   return (
     <>
       <nav>
         <div>
-          <img src={"/cislogo.png"} alt="CIS Logo" onClick={redirectToHome} />
+          <img src={"/cislogo.png"} alt="CIS Logo" onClick={async () => router.push("/home")} />
         </div>
         <div className="nav-right">
-          <GrCart size={"25px"} style={{ marginRight: "30px", cursor: "pointer" }} />
+          <GrCart
+            size={"25px"}
+            style={{ marginRight: "30px", cursor: "pointer" }}
+            onClick={async () => router.push("/home/my-cart")}
+          />
           <NavbarUserWidget size={"35px"} />
         </div>
       </nav>

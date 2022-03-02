@@ -18,7 +18,7 @@ const CompleteSignupPage: React.FC = () => {
   useRedirectWhenLoggedOut();
 
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
-    useUpdateSubjectOptions();
+    useUpdateSubjectOptions(null, null);
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const [displayName, setDisplayName] = useState(null);
   const { authUser, userData } = useGetCurrUser();

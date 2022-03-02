@@ -41,59 +41,63 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
   return (
     <>
       <section>
-        {listings.map((listing, i) => {
-          return (
-            <div
-              className="listing-card"
-              key={listing.id}
-              onClick={async () => router.push(`/home/listings/${listing.id}`)}
-            >
-              {isLoading ? (
-                <Skeleton count={1} height={245} borderRadius={12} />
-              ) : (
-                <div className="image-container">
-                  {listing.state === "reserved" && (
-                    <div>
-                      <p className="reserved-text">RESERVED</p>
-                      <div className="reserved-overlay"></div>
+        {listings.length === 0 ? (
+          <p className="no-listings-text">No listings found</p>
+        ) : (
+          listings.map((listing, i) => {
+            return (
+              <div
+                className="listing-card"
+                key={listing.id}
+                onClick={async () => router.push(`/home/listings/${listing.id}`)}
+              >
+                {isLoading ? (
+                  <Skeleton count={1} height={245} borderRadius={12} />
+                ) : (
+                  <div className="image-container">
+                    {listing.state === "reserved" && (
+                      <div>
+                        <p className="reserved-text">RESERVED</p>
+                        <div className="reserved-overlay"></div>
+                      </div>
+                    )}
+                    <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
+                  </div>
+                )}
+                <div className="listing-information">
+                  {isLoading ? (
+                    <Skeleton count={1} height={17.5} borderRadius={0} />
+                  ) : (
+                    <div className="tags-container">
+                      <div className="year-level-tag tag">Y{listing.yearLevel}</div>
+                      {listing.subject && <div className="subject-tag tag">{listing.subject}</div>}
+                      <div className="type-tag tag">{capitalise(listing.type)}</div>
+                      <div
+                        className="condition-tag tag"
+                        style={{ background: getConditionTagColor(listing.condition) }}
+                      >
+                        {capitalise(listing.condition)}
+                      </div>
                     </div>
                   )}
-                  <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
-                </div>
-              )}
-              <div className="listing-information">
-                {isLoading ? (
-                  <Skeleton count={1} height={17.5} borderRadius={0} />
-                ) : (
-                  <div className="tags-container">
-                    <div className="year-level-tag tag">Y{listing.yearLevel}</div>
-                    {listing.subject && <div className="subject-tag tag">{listing.subject}</div>}
-                    <div className="type-tag tag">{capitalise(listing.type)}</div>
-                    <div
-                      className="condition-tag tag"
-                      style={{ background: getConditionTagColor(listing.condition) }}
-                    >
-                      {capitalise(listing.condition)}
+                  {isLoading ? (
+                    <Skeleton count={1} height={24} borderRadius={0} />
+                  ) : (
+                    <div className="listing-information-text">
+                      <h1 className="listing-name">{listing.name}</h1>
+                      <h1 className="listing-price">${listing.price}</h1>
                     </div>
-                  </div>
-                )}
-                {isLoading ? (
-                  <Skeleton count={1} height={24} borderRadius={0} />
-                ) : (
-                  <div className="listing-information-text">
-                    <h1 className="listing-name">{listing.name}</h1>
-                    <h1 className="listing-price">${listing.price}</h1>
-                  </div>
-                )}
-                {isLoading ? (
-                  <Skeleton count={1} height={22} borderRadius={0} />
-                ) : (
-                  <p className="seller">{listingOwnerNames[i]}</p>
-                )}
+                  )}
+                  {isLoading ? (
+                    <Skeleton count={1} height={22} borderRadius={0} />
+                  ) : (
+                    <p className="seller">{listingOwnerNames[i]}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </section>
 
       <style jsx>{`
@@ -223,6 +227,10 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         .seller {
           color: var(--secondaryTextColor);
           font-size: 15px;
+        }
+
+        .no-listings-text {
+          color: var(--secondaryTextColor);
         }
       `}</style>
     </>

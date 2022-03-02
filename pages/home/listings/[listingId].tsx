@@ -35,7 +35,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
   });
 
   const goToSellerProfile = () => {
-    window.open(`/home/profile/${seller.id}`, "_blank");
+    window.open(`/home/profile/available/${seller.id}`, "_blank");
   };
 
   return (
