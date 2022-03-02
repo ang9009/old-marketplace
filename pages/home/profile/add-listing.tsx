@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 import { reactSelectStyles } from "../../../data/reactSelectStyles";
@@ -11,6 +11,8 @@ import LargeTextInput from "../../../components/widgets/PrimaryTextArea";
 import useSubmitAddListingForm from "../../../hooks/useSubmitAddListingForm";
 import Condition from "../../../types/condition.enum";
 import capitalise from "../../../utils/capitalise";
+import { IoIosInformationCircle } from "react-icons/io";
+import getConditionHint from "../../../utils/getConditionHint";
 
 const AddListing: React.FC = () => {
   const [name, setName] = useState(null);
@@ -19,9 +21,10 @@ const AddListing: React.FC = () => {
   const [listingType, setListingType] = useState<Option>(null);
   const [image, setImage] = useState<{ url: string; file: File }>(null);
   const [condition, setCondition] = useState<Option>(null);
+  const [conditionHint, setConditionHint] = useState(null);
+
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions(null, null);
-
   const { isLoading, addListing } = useSubmitAddListingForm({
     listingType: listingType?.value,
     yearLevel: parseInt(yearLevel?.value),
@@ -29,6 +32,11 @@ const AddListing: React.FC = () => {
     image,
     condition: condition?.value as Condition,
   });
+  useEffect(() => {
+    if (condition) {
+      setConditionHint(getConditionHint(condition.value));
+    }
+  }, [condition]);
 
   const getConditionObject = () => {
     const result: Option[] = [];
@@ -42,7 +50,7 @@ const AddListing: React.FC = () => {
     <>
       <form className="page-container" onSubmit={addListing}>
         <h1 className="form-title">Add listing</h1>
-        <div className="inputs-grid-container">
+        <section className="inputs-grid-container">
           <div>
             <PrimaryTextInput
               placeholder={"Listing name"}
@@ -59,37 +67,17 @@ const AddListing: React.FC = () => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+        </section>
 
-          <div>
-            <p className="form-field-heading">Listing type</p>
-            <Select
-              options={listingTypeOptions}
-              placeholder={"Select listing type"}
-              isSearchable={false}
-              value={listingType}
-              onChange={(e) => {
-                setListingType(e);
+        <LargeTextInput
+          placeholder={"Listing description"}
+          name={"description"}
+          height={200}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-                if (e.value === "miscellaneous") {
-                  setSubjects(null);
-                }
-              }}
-              styles={reactSelectStyles}
-            />
-          </div>
-
-          <div>
-            <p className="form-field-heading">Listing condition</p>
-            <Select
-              options={getConditionObject()}
-              value={condition}
-              onChange={(e) => setCondition(e)}
-              placeholder={"Listing condition"}
-              styles={reactSelectStyles}
-              isSearchable={false}
-            />
-          </div>
-
+        <section className="inputs-grid-container">
           <div>
             <p className="form-field-heading">Intended year level</p>
             <Select
@@ -124,15 +112,43 @@ const AddListing: React.FC = () => {
               </>
             )}
           </div>
-        </div>
 
-        <LargeTextInput
-          placeholder={"Listing description"}
-          name={"description"}
-          height={200}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <div>
+            <p className="form-field-heading">Listing type</p>
+            <Select
+              options={listingTypeOptions}
+              placeholder={"Select listing type"}
+              isSearchable={false}
+              value={listingType}
+              onChange={(e) => {
+                setListingType(e);
+
+                if (e.value === "miscellaneous") {
+                  setSubjects(null);
+                }
+              }}
+              styles={reactSelectStyles}
+            />
+          </div>
+
+          <div>
+            <p className="form-field-heading">Listing condition</p>
+            <Select
+              options={getConditionObject()}
+              value={condition}
+              onChange={(e) => setCondition(e)}
+              placeholder={"Listing condition"}
+              styles={reactSelectStyles}
+              isSearchable={false}
+            />
+            {condition && (
+              <div className="condition-hint-container">
+                <IoIosInformationCircle />
+                <p className="condition-hint-text">{conditionHint}</p>
+              </div>
+            )}
+          </div>
+        </section>
 
         <p className="form-field-heading">Listing image</p>
         <ImageDropzone image={image} setImage={setImage} />
@@ -149,6 +165,18 @@ const AddListing: React.FC = () => {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           grid-column-gap: 30px;
+        }
+
+        .condition-hint-container {
+          color: var(--secondaryTextColor);
+          margin-top: 5px;
+          font-size: 13px;
+          display: flex;
+          align-items: center;
+        }
+
+        .condition-hint-text {
+          margin-left: 3px;
         }
       `}</style>
     </>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 import { reactSelectStyles } from "../../../../data/reactSelectStyles";
@@ -15,6 +15,8 @@ import { GetServerSideProps } from "next";
 import Listing from "../../../../types/listing.interface";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import useSubmitEditListingForm from "../../../../hooks/useSubmitEditListingForm";
+import getConditionHint from "../../../../utils/getConditionHint";
+import { IoIosInformationCircle } from "react-icons/io";
 
 interface Props {
   listingData: Listing;
@@ -34,6 +36,7 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
   } as Option);
   const [image, setImage] = useState<{ url: string; file: File }>({ url: listingImgUrl, file: null });
   const [description, setDescription] = useState(listingData.description);
+  const [conditionHint, setConditionHint] = useState(null);
 
   const subjectInitialState = {
     label: listingData.subject,
@@ -45,6 +48,11 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
   } as Option;
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions(subjectInitialState, yearLevelInitialState);
+  useEffect(() => {
+    if (condition) {
+      setConditionHint(getConditionHint(condition.value));
+    }
+  }, [condition]);
 
   const { isLoading, addListing } = useSubmitEditListingForm({
     listingType: type?.value,
@@ -158,7 +166,12 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
               styles={reactSelectStyles}
               isSearchable={false}
             />
-            <p>Like new: item is in relatively mint condition.</p>
+            {condition && (
+              <div className="condition-hint-container">
+                <IoIosInformationCircle />
+                <p className="condition-hint-text">{conditionHint}</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -177,6 +190,18 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           grid-column-gap: 30px;
+        }
+
+        .condition-hint-container {
+          color: var(--secondaryTextColor);
+          margin-top: 5px;
+          font-size: 13px;
+          display: flex;
+          align-items: center;
+        }
+
+        .condition-hint-text {
+          margin-left: 3px;
         }
       `}</style>
     </>
