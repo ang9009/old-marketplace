@@ -98,8 +98,4 @@ const Index: React.FC<Props> = ({}) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return { props: {} };
-};
-
 export default Index;
