@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged, User as AuthUser } from "firebase/auth";
+import { getAuth, User as AuthUser } from "firebase/auth";
 import { doc, getDoc, getFirestore, DocumentSnapshot, DocumentData } from "firebase/firestore";
 
 import User from "../types/user.interface";
@@ -12,7 +12,7 @@ export default function useGetCurrUser() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
@@ -22,9 +22,11 @@ export default function useGetCurrUser() {
       } else {
         console.log("Not logged in");
         setIsLoading(false);
-        return;
       }
     });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return { authUser, userData: userDocSnap?.data() as User, isLoading };

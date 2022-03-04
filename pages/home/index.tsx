@@ -5,8 +5,20 @@ import Hero from "../../components/ui/Hero";
 import { GetServerSideProps } from "next";
 import useGetCurrUser from "../../hooks/useGetCurrUser";
 import Listing from "../../types/listing.interface";
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 import ListingsSection from "../../components/ui/ListingsSection";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import User from "../../types/user.interface";
 
 interface Props {
   recommendedListings: Listing[];
@@ -14,8 +26,24 @@ interface Props {
 
 const Index: React.FC<Props> = ({}) => {
   const db = getFirestore();
-  const { userData } = useGetCurrUser();
+  const auth = getAuth();
+  const [userData, setUserData] = useState<User>(null);
   const [listings, setListings] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        setUserData(docSnap.data() as User);
+      } else {
+        setUserData(null);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (userData) {
@@ -39,6 +67,7 @@ const Index: React.FC<Props> = ({}) => {
           }
         })
       ).then(() => {
+        console.log(listings);
         setListings(listings);
       });
     }
