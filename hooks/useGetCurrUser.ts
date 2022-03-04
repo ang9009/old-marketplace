@@ -12,19 +12,22 @@ export default function useGetCurrUser() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         setAuthUser(user);
         setUserDocSnap(docSnap);
         setIsLoading(false);
+        console.log("useGetCurrUser triggered");
       } else {
         console.log("Not logged in");
         setIsLoading(false);
         return;
       }
     });
+
+    return () => unsubscribe();
   }, []);
 
   return { authUser, userData: userDocSnap?.data() as User, isLoading };

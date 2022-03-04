@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
+import nookies from "nookies";
+import { GetServerSideProps } from "next";
+import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 
 import Searchbar from "../../components/widgets/Searchbar";
 import Hero from "../../components/ui/Hero";
-import { GetServerSideProps } from "next";
 import useGetCurrUser from "../../hooks/useGetCurrUser";
-import Listing from "../../types/listing.interface";
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import ListingsSection from "../../components/ui/ListingsSection";
+import Listing from "../../types/listing.interface";
 
-interface Props {
-  recommendedListings: Listing[];
-}
-
-const Index: React.FC<Props> = ({}) => {
+const Index: React.FC = () => {
   const db = getFirestore();
   const { userData } = useGetCurrUser();
-  const [listings, setListings] = useState(null);
+  const [recommendedListings, setRecommendedListings] = useState<Listing[]>(null);
 
-  useEffect(() => {
-    if (userData) {
-      const listings: Listing[] = [];
+  const getRecommendedListings = (userData) => {
+    return new Promise<Listing[][]>(async (resolve) => {
       Promise.all(
         userData.subjects.map(async (subject) => {
           const q = query(
@@ -32,14 +28,28 @@ const Index: React.FC<Props> = ({}) => {
 
           const listingQuerySnapshot = await getDocs(q);
 
+          const listings: Listing[] = [];
+
           if (listingQuerySnapshot) {
             listingQuerySnapshot.forEach((doc) => {
               listings.push(doc.data() as Listing);
             });
           }
+
+          console.log("fetching");
+          return listings;
         })
-      ).then(() => {
-        setListings(listings);
+      ).then((listings) => {
+        resolve(listings);
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (userData) {
+      getRecommendedListings(userData).then((listings) => {
+        const flattenedListings = listings.flat();
+        // setRecommendedListings(flattenedListings);
       });
     }
   }, [userData]);
@@ -50,7 +60,7 @@ const Index: React.FC<Props> = ({}) => {
         <Searchbar />
         <Hero />
         <h1 className="heading">Recommended for you</h1>
-        {listings && <ListingsSection listings={listings} />}
+        {isLoading ? <></> : <ListingsSection listings={recommendedListings} />}
       </div>
 
       <style jsx>{`
@@ -69,8 +79,13 @@ const Index: React.FC<Props> = ({}) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  return { props: {} };
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   try {
+//     const cookies = nookies.get(context);
+//     const token = await getAuth().verifyIdToken(cookies.token);
+//   }
+//
+//   return { props: {} };
+// };
 
 export default Index;
