@@ -4,13 +4,14 @@ import { toast } from "react-toastify";
 
 import ListingState from "../types/listingState.enum";
 import Listing from "../types/listing.interface";
+import algolia from "../lib/algolia";
 
 type HookProps = {
   updatedListing: Listing;
   authUser: User; // from firebase
 };
 
-function useUpdateListingState({ updatedListing, authUser }: HookProps) {
+function useUpdateListing({ updatedListing, authUser }: HookProps) {
   const db = getFirestore();
 
   const updateListingState = async () => {
@@ -18,14 +19,19 @@ function useUpdateListingState({ updatedListing, authUser }: HookProps) {
 
     try {
       const listingRef = doc(db, "listings", updatedListing.id);
+      const index = algolia.initIndex("listings");
 
       if (updatedListing.state === "available") {
+        index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.RESERVED });
+
         await updateDoc(listingRef, {
           state: ListingState.RESERVED,
           buyerId: authUser.uid,
         });
       } else if (updatedListing.state === "reserved") {
         if (updatedListing.buyerId === authUser.uid) {
+          index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.AVAILABLE });
+
           await updateDoc(listingRef, {
             state: ListingState.AVAILABLE,
             buyerId: null,
@@ -44,4 +50,4 @@ function useUpdateListingState({ updatedListing, authUser }: HookProps) {
   return { updateListingState };
 }
 
-export default useUpdateListingState;
+export default useUpdateListing;

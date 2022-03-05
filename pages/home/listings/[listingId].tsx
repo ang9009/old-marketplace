@@ -14,7 +14,7 @@ import useGetCurrUser from "../../../hooks/useGetCurrUser";
 import getConditionTagColor from "../../../utils/getConditionTagColor";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
 import { useRouter } from "next/router";
-import useUpdateListingState from "../../../hooks/useUpdateListingState";
+import useUpdateListing from "../../../hooks/useUpdateListing";
 
 interface Props {
   listing: Listing;
@@ -29,7 +29,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
   const db = getFirestore();
 
   const { authUser, isLoading: isUserLoading } = useGetCurrUser();
-  const { updateListingState } = useUpdateListingState({ updatedListing, authUser });
+  const { updateListingState } = useUpdateListing({ updatedListing, authUser });
 
   useEffect(() => {
     const docRef = doc(db, "listings", listing.id);

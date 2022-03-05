@@ -2,20 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import Searchbar from "../../components/widgets/Searchbar";
 import Hero from "../../components/ui/Hero";
-import { GetServerSideProps } from "next";
-import useGetCurrUser from "../../hooks/useGetCurrUser";
 import Listing from "../../types/listing.interface";
-import {
-  collection,
-  doc,
-  DocumentData,
-  DocumentSnapshot,
-  getDoc,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, query, where, orderBy } from "firebase/firestore";
 import ListingsSection from "../../components/ui/ListingsSection";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import User from "../../types/user.interface";
@@ -67,7 +55,7 @@ const Index: React.FC<Props> = ({}) => {
           }
         })
       ).then(() => {
-        console.log(listings);
+        listings.sort((a, b) => a.price - b.price);
         setListings(listings);
       });
     }

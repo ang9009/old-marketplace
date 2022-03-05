@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import useGetCurrUser from "./useGetCurrUser";
 import ListingState from "../types/listingState.enum";
 import Condition from "../types/condition.enum";
+import algolia from "../lib/algolia";
 
 interface Props {
   listingType: string;
@@ -91,6 +92,9 @@ function useSubmitEditListing(props: Props) {
         condition: condition,
         price: listingPrice,
       };
+
+      const index = algolia.initIndex("listings");
+      await index.partialUpdateObject({ objectID: newListing.id, ...newListing });
 
       await setDoc(doc(db, "listings", listingId), newListing);
 
