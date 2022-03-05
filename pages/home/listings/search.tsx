@@ -18,7 +18,6 @@ const search: React.FC<Props> = ({ listings }) => {
   return (
     <>
       <div className="page-container">
-        <Searchbar />
         <h1 className="returned-text">
           "{query}" returned {listings.length} result{listings.length === 1 ? "" : "s"}
         </h1>
@@ -43,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const index = algolia.initIndex("listings");
 
-  index.setSettings({ searchableAttributes: ["name", "description"] });
+  index.setSettings({ searchableAttributes: ["name", "description", "subjects"] });
 
   const { hits: listings } = await index.search<Listing[]>(query);
 

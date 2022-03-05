@@ -64,7 +64,6 @@ const Index: React.FC<Props> = ({}) => {
   return (
     <>
       <div className="page-container">
-        <Searchbar />
         <Hero />
         <h1 className="heading">Recommended for you</h1>
         {listings && <ListingsSection listings={listings} />}

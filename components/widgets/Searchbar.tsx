@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const Searchbar: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -10,7 +11,7 @@ const Searchbar: React.FC = () => {
     <>
       <input
         type="text"
-        placeholder="Search..."
+        placeholder={`Search...`}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyPress={async (e) => {
@@ -26,9 +27,10 @@ const Searchbar: React.FC = () => {
           background: var(--secondaryBackgroundColor);
           border: none;
           padding: 15px;
-          width: 100%;
+          width: 70%;
+          height: 70%;
           border-radius: 50px;
-          margin-top: 35px;
+          margin-left: 40px;
         }
       `}</style>
     </>

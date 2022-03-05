@@ -3,6 +3,7 @@ import NavbarUserWidget from "../widgets/NavbarUserWidget";
 import { GrCart } from "react-icons/gr";
 import useRedirectWhenLoggedOut from "../../hooks/useRedirectWhenLoggedOut";
 import { useRouter } from "next/router";
+import Searchbar from "../widgets/Searchbar";
 
 const Navbar: React.FC = () => {
   useRedirectWhenLoggedOut();
@@ -11,9 +12,10 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav>
-        <div>
+        <div className="nav-left">
           <img src={"/cislogo.png"} alt="CIS Logo" onClick={async () => router.push("/home")} />
         </div>
+        <Searchbar />
         <div className="nav-right">
           <GrCart
             size={"25px"}
@@ -34,6 +36,12 @@ const Navbar: React.FC = () => {
           padding: 20px 45px;
           box-shadow: 0px 8px 8px rgba(227, 227, 227, 0.25);
           height: var(--navbarHeight);
+        }
+
+        .nav-left {
+          display: flex;
+          align-items: center;
+          width: fit-content;
         }
 
         .nav-right {
