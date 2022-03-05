@@ -1,52 +1,32 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
-import getListingAndUserDocs from "../utils/getListingAndUserDocs";
 import ListingState from "../types/listingState.enum";
 import Listing from "../types/listing.interface";
 
 type HookProps = {
-  listingCache: Listing;
-  setListingCache: Dispatch<SetStateAction<Listing>>; // dispatch and set from react
+  updatedListing: Listing;
   authUser: User; // from firebase
 };
 
-function useUpdateListingState({ listingCache, setListingCache, authUser }: HookProps) {
+function useUpdateListingState({ updatedListing, authUser }: HookProps) {
   const db = getFirestore();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const updateListingState = async () => {
     if (!authUser) return;
 
-    setIsLoading(true);
-
     try {
-      const listingRef = doc(db, "listings", listingCache.id);
-      const { listing } = await getListingAndUserDocs(listingCache.id);
-      const state = listing.state;
+      const listingRef = doc(db, "listings", updatedListing.id);
 
-      if (state === "available") {
+      if (updatedListing.state === "available") {
         await updateDoc(listingRef, {
           state: ListingState.RESERVED,
           buyerId: authUser.uid,
         });
-
-        setListingCache({
-          ...listing,
-          state: ListingState.RESERVED,
-          buyerId: authUser.uid,
-        });
-      } else if (state === "reserved") {
-        if (listing.buyerId === authUser.uid) {
+      } else if (updatedListing.state === "reserved") {
+        if (updatedListing.buyerId === authUser.uid) {
           await updateDoc(listingRef, {
-            state: ListingState.AVAILABLE,
-            buyerId: null,
-          });
-
-          setListingCache({
-            ...listing,
             state: ListingState.AVAILABLE,
             buyerId: null,
           });
@@ -54,21 +34,14 @@ function useUpdateListingState({ listingCache, setListingCache, authUser }: Hook
           toast.error("This listing has already been reserved or has been marked as sold!", {
             autoClose: 3000,
           });
-          setListingCache({
-            ...listing,
-            state: ListingState.RESERVED,
-          });
         }
       }
-
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
-      setIsLoading(false);
     }
   };
 
-  return { updateListingState, isLoading };
+  return { updateListingState };
 }
 
 export default useUpdateListingState;

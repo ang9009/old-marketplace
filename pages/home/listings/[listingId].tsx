@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import { collection, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import Zoom from "react-medium-image-zoom";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
-import Skeleton from "react-loading-skeleton";
 
 import Listing from "../../../types/listing.interface";
+import User from "../../../types/user.interface";
 import ListingState from "../../../types/listingState.enum";
 import capitalise from "../../../utils/capitalise";
 import PrimaryButton from "../../../components/widgets/PrimaryButton";
 import useGetCurrUser from "../../../hooks/useGetCurrUser";
 import getConditionTagColor from "../../../utils/getConditionTagColor";
-import User from "../../../types/user.interface";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
-import useUpdateListingState from "../../../hooks/useUpdateListingState";
 import { useRouter } from "next/router";
+import useUpdateListingState from "../../../hooks/useUpdateListingState";
 
 interface Props {
   listing: Listing;
@@ -23,16 +24,23 @@ interface Props {
 }
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
-  const [listingCache, setListingCache] = useState<Listing>(listing);
+  const [updatedListing, setUpdatedListing] = useState(listing);
   const router = useRouter();
+  const db = getFirestore();
 
   const { authUser, isLoading: isUserLoading } = useGetCurrUser();
+  const { updateListingState } = useUpdateListingState({ updatedListing, authUser });
 
-  const { updateListingState, isLoading } = useUpdateListingState({
-    listingCache,
-    setListingCache,
-    authUser,
-  });
+  useEffect(() => {
+    const docRef = doc(db, "listings", listing.id);
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      setUpdatedListing(docSnap.data() as Listing);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const goToSellerProfile = () => {
     window.open(`/home/profile/available/${seller.id}`, "_blank");
@@ -50,21 +58,21 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
         <section className="listing-information-container">
           <div className="listing-content-container">
             <div className="listing-tags">
-              <div className="year-level-tag tag">Y{listingCache.yearLevel}</div>
-              {listingCache.subject && <div className="subject-tag tag">{listingCache.subject}</div>}
-              <div className="type-tag tag">{capitalise(listingCache.type)}</div>
+              <div className="year-level-tag tag">Y{updatedListing.yearLevel}</div>
+              {updatedListing.subject && <div className="subject-tag tag">{updatedListing.subject}</div>}
+              <div className="type-tag tag">{capitalise(updatedListing.type)}</div>
               <div
                 className="condition-tag tag"
                 style={{ background: getConditionTagColor(listing.condition) }}
               >
-                {capitalise(listingCache.condition)}
+                {capitalise(updatedListing.condition)}
               </div>
             </div>
-            <p className="listing-name">{listingCache.name}</p>
-            <h1 className="listing-price">${listingCache.price}</h1>
+            <p className="listing-name">{updatedListing.name}</p>
+            <h1 className="listing-price">${updatedListing.price}</h1>
             <div className="divider" />
             <h1>Description</h1>
-            <p className="listing-description">{listingCache.description}</p>
+            <p className="listing-description">{updatedListing.description}</p>
           </div>
 
           {isUserLoading ? (
@@ -75,7 +83,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 <Skeleton height={30} style={{ marginTop: "15px" }} />
               </div>
             </div>
-          ) : authUser && authUser.uid === listingCache.ownerId ? (
+          ) : authUser && authUser.uid === updatedListing.ownerId ? (
             <div className="listing-actions-container">
               <h1>You own this listing!</h1>
               <PrimaryButton
@@ -101,8 +109,8 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
               </div>
               <PrimaryButton
                 text={
-                  listingCache.state !== "available"
-                    ? authUser && listingCache.buyerId === authUser.uid
+                  updatedListing.state !== "available"
+                    ? authUser && updatedListing.buyerId === authUser.uid
                       ? "Cancel reservation"
                       : "Unavailable"
                     : "Reserve listing"
@@ -110,13 +118,12 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 width={"100%"}
                 onClick={updateListingState}
                 disabled={
-                  (listingCache.state === ListingState.RESERVED &&
-                    authUser &&
-                    listingCache.buyerId !== authUser.uid) ||
-                  isLoading
+                  updatedListing.state === ListingState.RESERVED &&
+                  authUser &&
+                  updatedListing.buyerId !== authUser.uid
                 }
                 background={
-                  listingCache.state !== "available"
+                  updatedListing.state !== "available"
                     ? "var(--secondaryButtonColor)"
                     : "var(--primaryButtonColor)"
                 }

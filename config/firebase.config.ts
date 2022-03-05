@@ -9,6 +9,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-export const provider = new GoogleAuthProvider().setCustomParameters({ hd: "student.cis.edu.hk" });
+export const provider = new GoogleAuthProvider();
+// .setCustomParameters({ hd: "student.cis.edu.hk" });
 
 export default firebaseConfig;

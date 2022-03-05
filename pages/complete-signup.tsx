@@ -19,6 +19,7 @@ const CompleteSignupPage: React.FC = () => {
 
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions(null, null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
   const [image, setImage] = useState<{ url: string; file: File } | null>(null);
   const [displayName, setDisplayName] = useState(null);
   const { authUser, userData } = useGetCurrUser();
@@ -47,6 +48,10 @@ const CompleteSignupPage: React.FC = () => {
               placeholder={"Phone number (optional)"}
               required={false}
               isNumeric={true}
+              value={phoneNumber}
+              onChange={(e) => {
+                setPhoneNumber(e.target.value);
+              }}
             />
 
             <p className="form-field-heading">Year level</p>

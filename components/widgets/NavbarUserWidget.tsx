@@ -56,7 +56,7 @@ const NavbarUserWidget: React.FC<Props> = ({ size }) => {
           menuButton={
             <div className="component-container">
               <img src={src} alt={src} height={size} width={size} />
-              <p className="user-name">{userData.name}</p>
+              <p className="user-name">{userData?.name}</p>
             </div>
           }
           transition

@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback((acceptedFiles: File[] | FileList) => {
     const url = URL.createObjectURL(acceptedFiles[0]);
     setImage({ url, file: acceptedFiles[0] });
   }, []);
@@ -25,7 +25,7 @@ const ImageDropzone: React.FC<Props> = ({ image, setImage }) => {
   return (
     <>
       <div {...getRootProps()} className="dropzone">
-        <input {...getInputProps()} />
+        <input {...getInputProps()} onChange={(e) => onDrop(e.target.files)} />
         <p>Drag a file here or click to select a file</p>
         {image?.url && <img src={image.url} alt={image.file?.name} className="image" />}
       </div>
