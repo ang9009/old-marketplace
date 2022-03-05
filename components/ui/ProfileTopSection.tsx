@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import User from "../../types/user.interface";
 import PrimaryButton from "../widgets/PrimaryButton";
 import Link from "next/link";
+import useGetCurrUser from "../../hooks/useGetCurrUser";
 
 interface Props {
   userData: User;
@@ -13,6 +14,7 @@ interface Props {
 const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
   const router = useRouter();
   const currentPage = router.asPath.split("/")[3];
+  const { userData: currUser } = useGetCurrUser();
 
   const goToAddListingsPage = async () => {
     await router.push("/home/profile/add-listing");
@@ -50,7 +52,9 @@ const ProfileTopSection: React.FC<Props> = ({ userData, src }) => {
               </Link>
             </li>
           </ul>
-          <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
+          {currUser?.id == userData.id && (
+            <PrimaryButton text={"Add listing"} onClick={goToAddListingsPage} />
+          )}
         </div>
       </section>
 

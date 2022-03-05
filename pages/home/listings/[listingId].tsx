@@ -42,6 +42,8 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
     };
   }, []);
 
+  useEffect(() => {});
+
   const goToSellerProfile = () => {
     window.open(`/home/profile/available/${seller.id}`, "_blank");
   };
@@ -96,6 +98,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 border={"1px solid var(--primaryBorderColor)"}
               />
               <PrimaryButton text={"Mark as sold"} width={"100%"} mt={"15px"} />
+              {updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}
             </div>
           ) : (
             <div className="listing-actions-container">
@@ -128,6 +131,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                     : "var(--primaryButtonColor)"
                 }
               />
+              {updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}
             </div>
           )}
         </section>
