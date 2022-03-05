@@ -19,10 +19,12 @@ export default function useGetCurrUser() {
         setAuthUser(user);
         setUserDocSnap(docSnap);
         setIsLoading(false);
-        console.log("useGetCurrUser triggered");
       } else {
         console.log("Not logged in");
         setIsLoading(false);
+        setUserDocSnap(null);
+        setAuthUser(null);
+        return;
       }
     });
     return () => {
