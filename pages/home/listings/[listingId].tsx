@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import Zoom from "react-medium-image-zoom";
 import Modal from "react-modal";
-import { deleteDoc, doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { deleteDoc, doc, getFirestore, onSnapshot, Unsubscribe, updateDoc } from "firebase/firestore";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
 
@@ -17,6 +17,7 @@ import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
 import { useRouter } from "next/router";
 import useUpdateListing from "../../../hooks/useUpdateListing";
 import { toast } from "react-toastify";
+import algolia from "../../../lib/algolia";
 
 interface Props {
   listing: Listing;
@@ -27,25 +28,24 @@ interface Props {
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [updatedListing, setUpdatedListing] = useState(listing);
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const db = getFirestore();
 
   const { authUser, isLoading: isUserLoading } = useGetCurrUser();
   const { updateListingState } = useUpdateListing({ updatedListing, authUser });
 
-  useEffect(() => {
+  const unsubscribe = useMemo(() => {
     const docRef = doc(db, "listings", listing.id);
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+
+    return onSnapshot(docRef, (docSnap) => {
       setUpdatedListing(docSnap.data() as Listing);
     });
-
-    return () => {
-      unsubscribe();
-    };
   }, []);
 
-  useEffect(() => {});
+  useEffect(() => {
+    return () => unsubscribe();
+  }, []);
 
   const goToSellerProfile = () => {
     window.open(`/home/profile/available/${seller.id}`, "_blank");
@@ -76,13 +76,45 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
   }
 
   const deleteListing = async () => {
-    const docRef = doc(db, "listings", listing.id);
-    await router.push(`/home/profile/available/${listing.ownerId}`);
+    unsubscribe();
+    const docRef = doc(db, "listings", updatedListing.id);
     await deleteDoc(docRef);
-    await router.push(`/home/profile/available/${listing.ownerId}`);
+    const index = algolia.initIndex("listings");
+    await index.deleteObject(listing.id);
     toast.success("Listing successfully deleted.", {
-      autoClose: 10000,
+      autoClose: 5000,
     });
+    await router.push(`/home/profile/available/${updatedListing.ownerId}`);
+  };
+
+  const markAsSold = async () => {
+    const index = algolia.initIndex("listings");
+    index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.SOLD });
+
+    const listingRef = doc(db, "listings", updatedListing.id);
+    await updateDoc(listingRef, {
+      state: ListingState.SOLD,
+    });
+
+    toast.success("Listing marked as sold.", {
+      autoClose: 5000,
+    });
+    await router.push(`/home/profile/sold/${updatedListing.ownerId}`);
+  };
+
+  const markAsAvailable = async () => {
+    const index = algolia.initIndex("listings");
+    index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.AVAILABLE });
+
+    const listingRef = doc(db, "listings", updatedListing.id);
+    await updateDoc(listingRef, {
+      state: ListingState.AVAILABLE,
+    });
+
+    toast.success("Listing marked as available.", {
+      autoClose: 5000,
+    });
+    await router.push(`/home/profile/available/${updatedListing.ownerId}`);
   };
 
   return (
@@ -122,7 +154,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
               <div className="type-tag tag">{capitalise(updatedListing.type)}</div>
               <div
                 className="condition-tag tag"
-                style={{ background: getConditionTagColor(listing.condition) }}
+                style={{ background: getConditionTagColor(updatedListing.condition) }}
               >
                 {capitalise(updatedListing.condition)}
               </div>
@@ -163,8 +195,17 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 background={"none"}
                 border={"1px solid var(--primaryColor)"}
               />
-              <PrimaryButton text={"Mark as sold"} width={"100%"} mt={"15px"} />
-              {/*{updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}*/}
+              {updatedListing.state === "sold" ? (
+                <PrimaryButton
+                  text={"Mark as available"}
+                  width={"100%"}
+                  mt={"15px"}
+                  onClick={markAsAvailable}
+                  background={"var(--secondaryButtonColor)"}
+                />
+              ) : (
+                <PrimaryButton text={"Mark as sold"} width={"100%"} mt={"15px"} onClick={markAsSold} />
+              )}
             </div>
           ) : (
             <div className="listing-actions-container">
