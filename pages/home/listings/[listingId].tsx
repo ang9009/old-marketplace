@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import useUpdateListing from "../../../hooks/useUpdateListing";
 import { toast } from "react-toastify";
 import algolia from "../../../lib/algolia";
+import useListingActions from "../../../hooks/useListingActions";
 
 interface Props {
   listing: Listing;
@@ -27,7 +28,7 @@ interface Props {
 }
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
-  const [updatedListing, setUpdatedListing] = useState(listing);
+  const [updatedListing, setUpdatedListing] = useState<Listing>(listing);
   const [modalIsOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const db = getFirestore();
@@ -46,6 +47,8 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
   useEffect(() => {
     return () => unsubscribe();
   }, []);
+
+  const { deleteListing, markAsSold, markAsAvailable } = useListingActions({ unsubscribe, updatedListing });
 
   const goToSellerProfile = () => {
     window.open(`/home/profile/available/${seller.id}`, "_blank");
@@ -75,58 +78,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
     setIsOpen(false);
   }
 
-  const deleteListing = async () => {
-    unsubscribe();
-    const docRef = doc(db, "listings", updatedListing.id);
-    await deleteDoc(docRef);
-    const index = algolia.initIndex("listings");
-    await index.deleteObject(listing.id);
-    toast.success("Listing successfully deleted.", {
-      autoClose: 5000,
-    });
-    await router.push(`/home/profile/available/${updatedListing.ownerId}`);
-  };
-
-  const markAsSold = async () => {
-    const index = algolia.initIndex("listings");
-    index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.SOLD });
-
-    const listingRef = doc(db, "listings", updatedListing.id);
-    await updateDoc(listingRef, {
-      state: ListingState.SOLD,
-    });
-
-    toast.success("Listing marked as sold.", {
-      autoClose: 5000,
-    });
-    await router.push(`/home/profile/sold/${updatedListing.ownerId}`);
-  };
-
-  const markAsAvailable = async () => {
-    const index = algolia.initIndex("listings");
-    index.partialUpdateObject({ objectID: updatedListing.id, state: ListingState.AVAILABLE });
-
-    const listingRef = doc(db, "listings", updatedListing.id);
-    await updateDoc(listingRef, {
-      state: ListingState.AVAILABLE,
-    });
-
-    toast.success("Listing marked as available.", {
-      autoClose: 5000,
-    });
-    await router.push(`/home/profile/available/${updatedListing.ownerId}`);
-  };
-
   return (
     <>
       <div className="page-container">
-        <Modal
-          isOpen={modalIsOpen}
-          // onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Test"
-        >
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Test">
           <h1 className="modal-text">Are you sure? This action cannot be undone. </h1>
           <PrimaryButton
             text={"Cancel"}
@@ -228,9 +183,10 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 width={"100%"}
                 onClick={updateListingState}
                 disabled={
-                  updatedListing.state === ListingState.RESERVED &&
-                  authUser &&
-                  updatedListing.buyerId !== authUser.uid
+                  (updatedListing.state === ListingState.RESERVED &&
+                    authUser &&
+                    updatedListing.buyerId !== authUser.uid) ||
+                  updatedListing.state === ListingState.SOLD
                 }
                 background={
                   updatedListing.state !== "available"
