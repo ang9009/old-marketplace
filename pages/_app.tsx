@@ -1,7 +1,9 @@
+import React from "react";
 import { AppProps } from "next/app";
 import { initializeApp } from "firebase/app";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Modal from "react-modal";
 
 import firebaseConfig from "../config/firebase.config";
 import Navbar from "../components/ui/Navbar";
@@ -15,20 +17,20 @@ import "@szhsin/react-menu/dist/transitions/slide.css";
 import "react-medium-image-zoom/dist/styles.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
-import React from "react";
 
 initializeApp(firebaseConfig);
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const path = router.asPath.split("/");
+  Modal.setAppElement("#root");
 
   return (
     <>
       <Head>
         <title>CIS Marketplace</title>
       </Head>
-      <div style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
+      <div id="root" style={{ minHeight: "calc(100vh - var(--navbarHeight)" }}>
         {path[1] === "home" && <Navbar />}
         <ToastContainer />
         <Component {...pageProps} />

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { collection, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import Zoom from "react-medium-image-zoom";
+import Modal from "react-modal";
+import { deleteDoc, doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
 
@@ -15,6 +16,7 @@ import getConditionTagColor from "../../../utils/getConditionTagColor";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
 import { useRouter } from "next/router";
 import useUpdateListing from "../../../hooks/useUpdateListing";
+import { toast } from "react-toastify";
 
 interface Props {
   listing: Listing;
@@ -25,6 +27,7 @@ interface Props {
 
 const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, sellerProfilePictureUrl }) => {
   const [updatedListing, setUpdatedListing] = useState(listing);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
   const router = useRouter();
   const db = getFirestore();
 
@@ -48,9 +51,63 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
     window.open(`/home/profile/available/${seller.id}`, "_blank");
   };
 
+  //Modal stuff
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      padding: "60px",
+      width: "35vw",
+      textAlign: "center",
+      transition: "all 0.2s",
+    },
+  };
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  const deleteListing = async () => {
+    const docRef = doc(db, "listings", listing.id);
+    await router.push(`/home/profile/available/${listing.ownerId}`);
+    await deleteDoc(docRef);
+    await router.push(`/home/profile/available/${listing.ownerId}`);
+    toast.success("Listing successfully deleted.", {
+      autoClose: 10000,
+    });
+  };
+
   return (
     <>
       <div className="page-container">
+        <Modal
+          isOpen={modalIsOpen}
+          // onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Test"
+        >
+          <h1 className="modal-text">Are you sure? This action cannot be undone. </h1>
+          <PrimaryButton
+            text={"Cancel"}
+            width={"100%"}
+            mt={"15px"}
+            color={"#000"}
+            background={"none"}
+            onClick={closeModal}
+            border={"1px solid var(--primaryBorderColor)"}
+          />
+          <PrimaryButton text={"Confirm and delete"} width={"100%"} mt={"15px"} onClick={deleteListing} />
+        </Modal>
+
         <div className="listing-image-container">
           <Zoom wrapStyle={{ width: "100%", height: "100%" }} zoomMargin={0}>
             <img src={listingImageUrl} alt="" className="listing-image" />
@@ -97,8 +154,17 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                 onClick={async () => router.push(`/home/listings/edit-listing/${listing.id}`)}
                 border={"1px solid var(--primaryBorderColor)"}
               />
+              <PrimaryButton
+                text={"Delete listing"}
+                onClick={openModal}
+                width={"100%"}
+                mt={"15px"}
+                color={"var(--primaryColor)"}
+                background={"none"}
+                border={"1px solid var(--primaryColor)"}
+              />
               <PrimaryButton text={"Mark as sold"} width={"100%"} mt={"15px"} />
-              {updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}
+              {/*{updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}*/}
             </div>
           ) : (
             <div className="listing-actions-container">
@@ -131,7 +197,7 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
                     : "var(--primaryButtonColor)"
                 }
               />
-              {updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}
+              {/*{updatedListing.state === "reserved" && <h1>Listing has been reserved by </h1>}*/}
             </div>
           )}
         </section>
@@ -255,6 +321,11 @@ const ListingPage: React.FC<Props> = ({ listing, listingImageUrl, seller, seller
         .seller-profile-link {
           color: #a5a5a5;
           cursor: pointer;
+        }
+
+        .modal-text {
+          font-size: 30px;
+          margin-bottom: 20px;
         }
       `}</style>
     </>
