@@ -5,6 +5,7 @@ import algolia from "../lib/algolia";
 
 import ListingState from "../types/listingState.enum";
 import Listing from "../types/listing.interface";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 interface Props {
   unsubscribe: Unsubscribe;
@@ -19,8 +20,14 @@ function useListingActions(props: Props) {
     props.unsubscribe();
     const docRef = doc(db, "listings", props.updatedListing.id);
     await deleteDoc(docRef);
+
     const index = algolia.initIndex("listings");
     await index.deleteObject(props.updatedListing.id);
+
+    //Delete listing image
+    const desertRef = ref(getStorage(), props.updatedListing.id);
+    deleteObject(desertRef);
+
     toast.success("Listing successfully deleted.", {
       autoClose: 4000,
     });

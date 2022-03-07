@@ -16,8 +16,6 @@ import getConditionTagColor from "../../../utils/getConditionTagColor";
 import getListingAndUserDocs from "../../../utils/getListingAndUserDocs";
 import { useRouter } from "next/router";
 import useUpdateListing from "../../../hooks/useUpdateListing";
-import { toast } from "react-toastify";
-import algolia from "../../../lib/algolia";
 import useListingActions from "../../../hooks/useListingActions";
 
 interface Props {
