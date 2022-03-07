@@ -104,7 +104,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
         .tag {
           font-size: 9px;
           display: inline;
-          padding: 2px 5px;
+          padding: 2px 3px;
           margin-right: 5px;
           font-weight: 800;
           color: #fff;
