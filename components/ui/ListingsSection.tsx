@@ -58,7 +58,13 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
                     {listing.state === "reserved" && (
                       <div>
                         <p className="reserved-text">RESERVED</p>
-                        <div className="reserved-overlay"></div>
+                        <div className="listing-overlay"></div>
+                      </div>
+                    )}
+                    {listing.state === "sold" && (
+                      <div>
+                        <p className="sold-text">SOLD</p>
+                        <div className="listing-overlay"></div>
                       </div>
                     )}
                     <img src={listingImgUrls[i]} alt="Image not available" className="listing-image" />
@@ -126,7 +132,7 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           object-fit: cover;
         }
 
-        .reserved-overlay {
+        .listing-overlay {
           position: absolute;
           width: 100%;
           height: 100%;
@@ -148,6 +154,20 @@ const ListingsSection: React.FC<Props> = ({ listings }) => {
           font-size: 15px;
           color: #000;
           background: #fff;
+          padding: 5px 10px;
+          border-radius: 8px;
+        }
+
+        .sold-text {
+          position: absolute;
+          z-index: 3;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-weight: bold;
+          font-size: 15px;
+          color: #fff;
+          background: #db4d4d;
           padding: 5px 10px;
           border-radius: 8px;
         }

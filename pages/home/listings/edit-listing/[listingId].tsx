@@ -26,14 +26,17 @@ interface Props {
 const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
   const [name, setName] = useState(listingData.name);
   const [price, setPrice] = useState(listingData.price);
+
   const [condition, setCondition] = useState({
     label: capitalise(listingData.condition),
     value: listingData.condition,
   } as Option);
+
   const [type, setType] = useState<Option>({
     label: capitalise(listingData.type),
     value: listingData.type,
   } as Option);
+
   const [image, setImage] = useState<{ url: string; file: File }>({ url: listingImgUrl, file: null });
   const [description, setDescription] = useState(listingData.description);
   const [conditionHint, setConditionHint] = useState(null);
@@ -42,12 +45,15 @@ const EditListing: React.FC<Props> = ({ listingData, listingImgUrl }) => {
     label: listingData.subject,
     value: listingData.subject,
   } as Option;
+
   const yearLevelInitialState = {
     label: `Y${listingData.yearLevel}`,
     value: `${listingData.yearLevel}`,
   } as Option;
+
   const { subjects, subjectOptions, yearLevel, setSubjects, setPreviousYearLevel, setYearLevel } =
     useUpdateSubjectOptions(subjectInitialState, yearLevelInitialState);
+
   useEffect(() => {
     if (condition) {
       setConditionHint(getConditionHint(condition.value));
