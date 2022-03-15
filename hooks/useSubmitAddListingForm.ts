@@ -53,15 +53,6 @@ function useSubmitAddListingForm(props: Props) {
       name: listingName,
     });
 
-    console.log(
-      inputSchema.cast({
-        ...props,
-        type: props.listingType,
-        price: listingPrice,
-        description: listingDescription,
-      })
-    );
-
     if (!isValid) {
       toast.error("One or more fields are empty!", {
         autoClose: 3000,

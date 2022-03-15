@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import Zoom from "react-medium-image-zoom";
 import Modal from "react-modal";
-import { deleteDoc, doc, getFirestore, onSnapshot, Unsubscribe, updateDoc } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { BiLinkExternal } from "react-icons/bi";
 import { GetServerSideProps } from "next";
 
