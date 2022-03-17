@@ -66,9 +66,6 @@ const NavbarUserWidget: React.FC<Props> = ({ size }) => {
           <MenuItem onClick={async () => router.push(`/home/profile/available/${userData.id}`)}>
             Profile
           </MenuItem>
-          <MenuItem onClick={async () => router.push(`/home/profile/user-settings/${userData.id}`)}>
-            User settings
-          </MenuItem>
           <MenuItem onClick={async () => router.push("/home/profile/add-listing")}>Add listing</MenuItem>
           <MenuItem onClick={logOut}>
             <span className="sign-out-option">Sign out</span>
