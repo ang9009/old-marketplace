@@ -13,7 +13,7 @@ Algolia
 Yup
 
 # Design Document
-https://docs.google.com/document/d/1NRwjTXqT6nbkRiKKD4FZuVLfLVcu_GJFsabgPo7hmLw/edit#heading=h.9cpm7qkbu2sr
+https://docs.google.com/document/d/1Gvhx-U-2we8NE9uSH-FhD0xWMBfGTfsx8fk2XNgSKzI/edit
 
 # Live version
 https://cis-marketplace.vercel.app/
