@@ -6,6 +6,7 @@ function useCompletedSignupRedirect() {
   const router = useRouter();
   const { userData } = useGetCurrUser();
 
+  //If the user has completed their signup, redirect to home, otherwise redirect to the complete signup page
   useEffect(() => {
     if (userData) {
       const redirect = async () => {

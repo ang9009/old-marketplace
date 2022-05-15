@@ -16,6 +16,7 @@ function useRedirectWhenLoggedIn() {
         const additionalInfo = getAdditionalUserInfo(result);
         const authUser = result.user;
 
+        //If the user is new, upload object to Firebase
         if (additionalInfo.isNewUser) {
           const incompleteUser: baseUser = {
             email: authUser.email,

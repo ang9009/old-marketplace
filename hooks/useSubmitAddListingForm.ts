@@ -20,6 +20,7 @@ interface Props {
   condition: Condition;
 }
 
+//Yup schema settings
 const inputSchema = yup.object().shape({
   type: yup.string().required(),
   yearLevel: yup.number().integer().positive(),
@@ -83,6 +84,7 @@ function useSubmitAddListingForm(props: Props) {
         price: listingPrice,
       };
 
+      //Updating algolia
       const index = algolia.initIndex("listings");
       await index.saveObject({ objectID: newListing.id, ...newListing });
 

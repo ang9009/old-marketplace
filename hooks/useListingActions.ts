@@ -12,6 +12,7 @@ interface Props {
   updatedListing: Listing;
 }
 
+
 function useListingActions(props: Props) {
   const db = getFirestore();
   const router = useRouter();
@@ -49,6 +50,7 @@ function useListingActions(props: Props) {
     await router.push(`/home/profile/sold/${props.updatedListing.ownerId}`);
   };
 
+  //Updates algolia and Firebase
   const markAsAvailable = async () => {
     const index = algolia.initIndex("listings");
     index.partialUpdateObject({ objectID: props.updatedListing.id, state: ListingState.AVAILABLE });

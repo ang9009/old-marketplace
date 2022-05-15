@@ -33,6 +33,7 @@ const Index: React.FC<Props> = ({ userData, userListings, src }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  //Getting current user data from Firebase
   const userId = context.query.userId as string;
   const src = await getUserSrc(userId);
   const { userData } = await getUser(userId);

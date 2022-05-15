@@ -11,6 +11,7 @@ export default function useGetCurrUser() {
   const [authUser, setAuthUser] = useState<AuthUser>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  //Retrieves the current user's user object from Firebase based on their authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {

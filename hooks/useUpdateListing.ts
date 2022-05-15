@@ -11,6 +11,7 @@ type HookProps = {
   authUser: User; // from firebase
 };
 
+//Updates listings after user makes edits
 function useUpdateListing({ updatedListing, authUser }: HookProps) {
   const db = getFirestore();
 
