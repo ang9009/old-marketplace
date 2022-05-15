@@ -43,7 +43,6 @@ function useSubmitSignupForm({ userDocSnap, yearLevel, subjects, image }: Props)
       const isValid = await inputSchema.isValid({
         yearLevel: parseInt(yearLevel.value),
         subjects,
-        image,
         phoneNumber: e.target.phoneNumber.value,
       });
 
