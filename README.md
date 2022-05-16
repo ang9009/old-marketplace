@@ -9,8 +9,7 @@
 This website allows CIS students to reserve and sell items.
 
 ## Libraries/API
-Algolia
-Yup
+Algolia, Yup
 
 # Design Document
 https://docs.google.com/document/d/1Gvhx-U-2we8NE9uSH-FhD0xWMBfGTfsx8fk2XNgSKzI/edit
